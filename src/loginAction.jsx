@@ -15,9 +15,7 @@ const data = Object.fromEntries(formData);
   const user = response?.data?.data?.user
   
   if (user){
-   queryClient.setQueryData(['authUser'], user)
-   console.log('cache check (action file)', queryClient.getQueryData(['authUser']));
-   
+   queryClient.setQueryData(['authUser'], user);
 
   }
 
