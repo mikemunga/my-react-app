@@ -1,0 +1,12 @@
+[
+    {
+     "name":"Pickachu",
+     "type":"Electric",
+     "abilities":["Static","lightning rod"]
+    },
+      {
+     "name":"Charizard",
+     "type":"fire",
+     "abilities":["blaze","Solar Power"]
+    }
+]

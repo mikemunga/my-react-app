@@ -1,0 +1,470 @@
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  useLoaderData,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useRouteLoaderData} from "react-router";
+import SignupPage,{ SignupAction } from './SignupPage';
+import LoginPage from './LoginPage';
+import { Toaster } from "sonner";
+import axiosInstance from "./axiosInstance";
+import { LoginAction } from "./loginAction";
+import ProductDetails from "./ProductDetails";
+import { productDetailsLoader } from "./ProductDetails.Loader";
+import {  useEffect, useState } from "react";
+import { GuestLayout } from "./ProtectedRoute.jsx";
+import filteredRedirectUrl from "./routerGuard.jsx";
+import { AnimatePage } from "./AnimatedPage.jsx";
+import { rootAuthLoader } from "./AuthRoothLoader";
+import { useCartStore } from "./useCartStore.js";
+import { cartLoader } from "./cartLoader.js";
+import  Cartlist from './Cart.jsx';
+import { fetchCurrentUser } from "./useAuthStore.js";
+import { queryClient } from "./Query.js";
+
+
+const authRedirectLoader = async ({request}) => {
+  //cart fetching logic on mount/ refresh by checking the user state.
+let user = queryClient.getQueryData(['authUser']);
+
+if(!user) {
+  try{
+    user = await fetchCurrentUser();
+
+    if(user) {
+      queryClient.setQueryData(['authUser'], user);
+      await useCartStore.getState().fetchGlobalCart();
+    }
+  } catch (error){
+    user=null;
+  }
+
+}
+
+const url = new URL(request.url);
+const isAuthPath = url.pathname === '/login' || url.pathname === '/signup';
+
+  if (user && isAuthPath) {
+    const destinationParam = url.searchParams.get('redirectTo');
+    const targetDestination = filteredRedirectUrl(destinationParam) || '/';
+    return redirect(targetDestination)
+  }
+ return { user };
+}
+ 
+
+
+
+const router = createBrowserRouter([
+  {
+     id: 'root',
+     path: '/',
+     element: <RootLayout/>,
+     loader : rootAuthLoader,
+     HydrateFallback :HydrateFallback,
+     errorElement: <GlobalErrorElement />,
+
+     shouldRevalidate: () => true,
+     children: [
+      {
+      index: true,
+      element: <MyShop/>,
+      loader: async (args) => {
+        await rootAuthLoader(args);
+        return itemsLoader(args);
+      }
+      },
+      {
+        path: 'cart',
+        element: <Cartlist/>,
+        loader: cartLoader
+      },
+      {
+        path :'product/:id',
+        element: <ProductDetails />,
+        loader :productDetailsLoader,
+      },
+
+      {
+
+        element : <GuestLayout />,
+        children : [
+         {
+        path :'login',
+        element: <LoginPage />,
+        loader: authRedirectLoader,
+        action :  LoginAction
+        },
+        {
+            path : 'signup',
+            element : <SignupPage />,
+            loader: authRedirectLoader,
+            action : SignupAction(queryClient)
+         }
+        ]
+      },
+        {
+            path: 'cart',
+            element: <Cartlist/>,
+            loader: cartLoader
+          },
+    ]
+  },
+  {
+    path: '*',
+    element : (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight: '60vh', textAlign:'center', padding:'20px'}}>
+        <h1 style={{color: '#1e293b', fontSize:'32px', marginBottom:'10px'}}>Page Not Found</h1>
+        <p style={{color :'#64748b', marginBottom:'20px'}}>The requested page doesn't exist.</p>
+        <Link to ='/' style={{textDecoration: 'none', background:'#1e293b', color:'white', padding:'8px 16px', borederRadious:'8px', fontWeight :'500'}}>
+        Go Back Home</Link>
+      </div>
+    )
+  }
+
+])
+
+
+export default  function App(){
+  return(
+    <>
+  
+     <Toaster position = 'top-right' richColors/>
+     <RouterProvider router={router}
+     />
+    
+    </>
+  )
+}
+//the loader
+async function itemsLoader ({request}){
+try{
+  const currentUrl = new URL(request.url);
+  const activeCategory = currentUrl.searchParams.get('category')||'';
+  const searchWord = currentUrl.searchParams.get('search')||'';
+  const response = await axiosInstance.get('/items',{
+    params : {
+      category : activeCategory,
+      search: searchWord
+    }
+  })
+  return response?.data
+ }catch(error){
+  if (error.name === 'CanceledError' || error.message === 'canceled'){
+    return[]
+  }
+  throw error;
+ }
+}
+
+
+
+function MyShop() {
+  const items  = useLoaderData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category') || 'All Products';
+  const [searchWord, setSearchWord] = useState(searchParams.get('search') || '')
+  const currentSearchQuery = searchParams.get('search') || '';
+  
+  useEffect(() => {
+    setSearchWord(currentSearchQuery);
+  }, [currentSearchQuery])
+
+
+  const handleSearch =  (e) => {
+   e.preventDefault();
+
+   const newParams = new URLSearchParams(searchParams);
+   const trimmedSearch = searchWord.trim();
+  
+   if(trimmedSearch){
+    newParams.set('search', trimmedSearch);
+   }else {
+    newParams.delete('search');
+   }
+   setSearchParams(newParams);
+  }
+
+  const buildPath = (category) => {
+    const params = new URLSearchParams();
+    if(category) params.set('category',category);
+    //if(currentSearch) params.set('search', currentSearch);
+    return `/?${params.toString()}`;
+  }
+ 
+  const getLinkStyle = ({ isActive }) => ({
+    textDecoration :'none',
+    fontWeight: isActive ? 'bold' : 'normal',
+    color : isActive ? '#da222' : '#b42f2f',
+    paddingBottom : isActive ? '2px solid #da222' : 'none',
+
+  });
+
+  return (
+
+  
+
+    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingTop:'5px',paddingLeft:'20px',paddingRight:'20px', fontFamily: 'sans-serif', marginTop:'60px' }}>
+ 
+     
+      <header style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <h1 style={{ color: '#da2222', fontSize: '2.5rem', fontWeight: 'bold' }}>{currentCategory.charAt(0).toLocaleUpperCase()+ currentCategory.slice(1)}</h1>
+      </header>
+
+    
+  
+      <section style={{ display: 'flex', justifyContent: 'center', marginBottom: '25px' }}>
+        <Form method="get" style={{ display: 'flex', width: '100%', maxWidth: '600px' }}>
+          <input
+            type="text"
+            name="searchQuery"
+            value={searchWord}
+            onChange={(e) => setSearchWord(e.target.value)}
+            style={{ flex: 1, padding: '12px 20px', fontSize: '16px', border: '2px solid #FF4747', borderRadius: '25px 0 0 25px', outline: 'none' }}
+          />
+          <button
+          onClick={handleSearch}
+          type="submit" style={{ background: '#FF4747', color: 'white', border: 'none', padding: '0 25px', fontSize: '16px', borderRadius: '0 25px 25px 0', cursor: 'pointer' }}>
+            Search
+          </button>
+        </Form>
+      </section>
+   
+      {/* 3. CATEGORY NAVIGATION BAR */}
+      <nav style={{ display: 'flex', justifyContent: 'space-between', gap: '20px', marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '15px'}}>
+        <NavLink to={buildPath('')}style={{ getLinkStyle}}> Explore</NavLink>
+        <NavLink to={buildPath('electronics')}style={{getLinkStyle}}>Electronics</NavLink>
+        <NavLink to={buildPath('jewelery')}style={{getLinkStyle}}>Jewelry</NavLink>
+        <NavLink to={buildPath("men's clothing")} style={{getLinkStyle}}>Men's Clothing</NavLink>
+        <NavLink to={buildPath("women's clothing")} style={{getLinkStyle}}>Women's Clothing</NavLink>
+        <NavLink to={buildPath("groceries")} style={{getLinkStyle}}>Groceries</NavLink>
+      </nav>
+
+
+      <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr', gap: '15px', padding:'20px 0', maxWidth:'1200px'
+      }}>
+          {items && items.length > 0 ? (
+          
+            items.map((item) => (
+            
+              <Link
+              to = {`/product/${item.id}`}
+              key={item.id} style={{
+                ...cardStyle,
+                transform: 'translateY(0px) scale(1)',
+                boxShandow : '0 4px 6px rgba(0, 0, 0, 0.15)',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-n-out'
+                }}
+                onMouseEnter ={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-6px) scale(1.01)';
+                  e.currentTarget.style.boxShadow ='0 12px 20px rgba(0, 0, 0, 0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow ='0 4px 6px rgba(0, 0, 0, 0.15)';
+                }}
+                >
+                
+                <div style={{ height: '200px', background: '#f7f7f7', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
+                  <img src={item.image || 'https://placeholder.com'} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                </div>
+               
+              
+                {/* Product Metadata */}
+                <div style={{ padding: '12px 5px' }}>
+                   <div style={{marginBottom:'0px'}}><p>{item.title}</p></div>
+                  <p style={{ fontSize: '14px', color: '#333', margin: '0 0 8px 0', height: '40px', overflow: 'hidden' }}>{item.name || item.item_details}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#FF4747' }}>KSH {item.price}</span>
+                    <span style={{ fontSize: '12px', color: '#999' }}>⭐ {item.rating || '4.5'}</span>
+                  </div>
+                </div>
+              </Link>
+              
+            ))
+          ) : (
+            <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666' }}>No products match your criteria.</p>
+          )}
+        </div>
+        </div>
+      
+
+  );
+}
+
+// Inline styles helper objects
+const navLinkStyle = { textDecoration: 'none', color: '#555', fontWeight: '600', padding: '5px 10px', borderRadius: '4px', fontSize: '15px' };
+const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', border: '1px solid #f0f0f0' };
+
+
+
+
+
+
+
+
+export function RootLayout() {
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+  const isTransitioning = navigation.state === 'loading';
+  const totalCartItems = useCartStore((state)=>state.getTotalCartCount())
+  const revalidator = useRevalidator()
+ 
+  const {user} = useRouteLoaderData() || {};
+  const handleLogout = async()=>{
+   try {
+    await axiosInstance.post('/auth/logout');
+   } catch (error) {
+    console.log('Logout request failed:', error);
+   } finally {
+    queryClient.setQueryData(['authUser'], undefined);
+    await queryClient.invalidateQueries({queryKey: ['authUser']});
+
+    revalidator.revalidate();
+    navigate('/')
+   }
+  }
+
+  return (
+    <div style={{ display:'grid', minHeight:'100vh', position:'relative', gridTemplateColumns:'1fr'}}>
+
+     {isTransitioning && (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, height: '3px', background: '#ff4747', width: '100%', zIndex: 9999, animation: 'pulse 1.5s inifinite'
+      }}/>
+     )}
+      
+
+      <header style={{ backgroundColor: '#1e293b', color: 'white', padding: '20px 40px', position: 'fixed', width: '100%', zIndex: 100, contain: 'layout paint paint', isolation:'isolate', boxShadow:'0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.6)'}}>
+
+        <div style={{ display :'flex', alignItems: 'baseline', gap: '12px', fontSize: '28px', justifyContent: 'space-around'}}>
+
+          <NavLink to="/" style={{...navLinkStyle, color: 'white', fontSize: '60px', fontWeight: 'bold', textDecoration: 'none' }}>
+            Easy Shop Store
+          </NavLink>
+
+          <nav>
+          
+            <Link to="/" style={{ color: 'white', marginRight: '15px', textDecoration: 'none' }}>Home</Link>
+
+            <Link to="/cart" style={{ color:  "#1b776d" , textDecoration: 'none' , }}> [🛒{totalCartItems}] </Link>
+            <Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>
+
+            <button
+            disabled={!user}
+            onClick={handleLogout}
+            style={{ color:user? "#248d2ff8":"#660e0e1e",borederRadious:'4p', padding:'5px', fontSize:'24px'}}> Log Out </button>
+        </nav>
+
+          
+        </div>
+      </header>
+
+      <OfflineBanner />
+      
+      
+      <main style={{ flex: 1, padding: '20px', maxWidth: '1200px', width:'100%', margin: '40px auto', paddingg: '0 24px', boxSizing: 'border-box' }}>
+        <AnimatePage key ={location.pathname}>
+        <Outlet />
+        </AnimatePage>
+      </main>
+
+      <footer style={{ background: '#f3f4f6', padding: '15px', textAlign: 'center', borderTop: '2px solid #e5e7eb' , paddingBlock:'24px 0', textAlignLast: 'center' , color: '#6b7280', fontSize: '0.875rem'}}>
+        <p>created by Michael M Munga on 2026/01/7.</p>
+      </footer>
+
+    </div>
+  );
+}
+
+
+
+
+
+export function HydrateFallback () {
+  return (
+   
+       <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9f9f9'}}>
+        <main style={{flex:1, display:'flex', justifyContent:'center', alignItems:'center', paddingTop: '80px'}}>
+          <div style={{textAlign: 'center', fontFamily: 'sans-serif', color: '#666'}}>
+            <h3>Booting GlobalStore Systems...</h3>
+            <h3>Please wait while we establish your secure session data....</h3>
+          </div>
+        </main>
+       </div>
+  );
+}
+
+
+
+
+export function GlobalErrorElement() {
+  const error = useRouteError();
+
+  let title = 'Unexpected System Error.';
+  let message = 'An error occurred while synchronizing store systems.';
+  console.log('Caught app crash:', error)
+     
+if(isRouteErrorResponse(error)){
+  if(error.status === 404){
+  title ='Page Not Found.';
+  message="The requested page doesn't exist.";
+  }else {
+    title =` Error ${error.status}`;
+    message = error.statusText || message
+  }
+} else if(error instanceof Error){
+  message = error.message;
+}
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fcfcfc', padding: '20px', fontSize:'1rem' }}>
+      <div style={{ maxWidth: '450px', width: '100%', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
+        <h1 style={{ color: '#222', marginBottom: '10px' }}>{title}</h1>
+        <p style={{ color: '#666', marginBottom: '24px', lineHeight: '1.5' }}> <span style={{color: '#ad3636'}}>{message}</span></p>
+       
+      <button onClick={()=> window.location.reload}>
+        Reload..
+      </button>
+      </div>
+    </div>
+  );
+}
+
+
+export function OfflineBanner () {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  useEffect (() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('isOnline', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('isOnline', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    }
+  }, []);
+
+  if(isOnline) return null;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom:0,
+      left: 0,
+      right: 0,
+      backgroundColor: '#e74c3c',
+      color: 'white',
+      textAlign: 'center',
+      padding: '10px',
+      fontWeight:'600',
+      zIndex: 9999,
+      fontFamily:'sans-serif',
+      boxShadow: '0 -2px 10px rgba(0,0,0,0.1'
+    }}>
+      🌐 You are currently offline. Some features may  be unavailable.
+    </div>
+  )
+}
+
+
