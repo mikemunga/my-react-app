@@ -1,10 +1,12 @@
 
-import {Form ,Link} from 'react-router';
+import {Form ,Link, useActionData} from 'react-router';
 import axiosInstance from './axiosInstance';
+import { queryClient } from './Query';
+import { useCartStore} from "./useCartStore";
 
 
 export default function SignupPage() { 
-  
+const actionData = useActionData();  
 const isSubmitting = navigation.state === 'submitting';
  
   return (
@@ -32,6 +34,7 @@ const isSubmitting = navigation.state === 'submitting';
               required
               style={styles.input}
             />
+            {actionData?.errors?.first_name && (<span style={{color:'red', fontSize:'0.8rem'}}>{actionData.errors.first_name}</span>)}
           </div>
 
           <div style={styles.inputGroup}>
@@ -44,6 +47,7 @@ const isSubmitting = navigation.state === 'submitting';
               required
               style={styles.input}
             />
+            {actionData?.errors?.email && (<span style={{color:'red', fontSize:'0.8rem'}}>{actionData.errors.email}</span>)}
           </div>
 
           <div style={styles.inputGroup}>
@@ -56,6 +60,7 @@ const isSubmitting = navigation.state === 'submitting';
               required
               style={styles.input}
             />
+            {actionData?.errors?.password && (<span style={{color:'red', fontSize:'0.8rem'}}>{actionData.errors.password}</span>)}
           </div>
 
           <button
@@ -89,22 +94,25 @@ const isSubmitting = navigation.state === 'submitting';
 
 
 
-export const SignupAction = (queryClient) => async ({ request }) => {
+export const SignupAction =  async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   
   try{
-  const response= await axiosInstance.post('/auth/signup', data);
+  const response= await axiosInstance.post('/auth/signup', data,{skipGlobalErrorHandler:true});
     
   if (response.data?.data?.user)
-    queryClient.setQueryData(['authUser'], response.data.data.user)
+    queryClient.setQueryData(['authUser'], response.data.data.user);
+    const fetchGlobalCart = useCartStore.getState().fetchGlobalCart;
+    await fetchGlobalCart();
 
   return {success: true}
    
   }catch(error){
     return {
     success:false,
-    error : error.response?.data?.message || 'Regestration faild. Please try again.'
+    error : error.response?.data?.message || 'Regestration faild. Please try again.',
+    errors: error.response?.data?.errors || null,
     }
   }
 }

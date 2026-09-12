@@ -3,8 +3,6 @@ import {  Link, useLoaderData, useNavigation, useFetcher , useLocation, useNavig
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
 import { useCartStore } from "./useCartStore.js";
-import { queryClient } from "./Query.js";
-
 
 export default function ProductDetails() {
   const fetcher = useFetcher();

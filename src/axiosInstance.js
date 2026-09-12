@@ -80,6 +80,8 @@ axiosInstance.interceptors.request.use(
         }
         const errorMessage = error.response?.data?.message || 'Something went wrong. Please try again.';
         toast.error(errorMessage);
+        console.log(errorMessage);
+        return Promise.reject(error);
     }
 )
 export default axiosInstance;
@@ -107,6 +109,10 @@ axiosInstance.interceptors.response.use(
 
         const status = error.response?.status;
         const backendData = error.response?.data;
+
+        if(error.config?.skipGlobalErrorHandler){
+            return Promise.reject(error);
+        }
 
         if(status === 401 || status === 403) {
             return Promise.reject(error);

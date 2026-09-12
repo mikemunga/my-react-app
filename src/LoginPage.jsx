@@ -1,7 +1,8 @@
 
-import {  Form, Link ,  useNavigation, useSearchParams} from "react-router";
+import {  Form, Link ,  useNavigation, useSearchParams, useActionData} from "react-router";
 
 export default function LoginPage() {
+  const data = useActionData();
   const navigation = useNavigation()
   const isSubmitting = navigation.state === 'submitting';
   const [searchParams] = useSearchParams();
@@ -43,9 +44,10 @@ export default function LoginPage() {
               id="password"
               name="password"
               type="password"
+              required
               placeholder="••••••••"
-             
             />
+            {(data?.errors?.password  || data?.error) &&(<span style={{color:'red', fontSize:'0.8rem'}}>{data.errors?.password || data.error}</span>)}
           </div>
 
           <button

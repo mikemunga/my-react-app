@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  useLoaderData,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useRouteLoaderData} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  useLoaderData,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -16,6 +16,7 @@ import { cartLoader } from "./cartLoader.js";
 import  Cartlist from './Cart.jsx';
 import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
+import {useAuth } from './useAuthStore.js';
 
 
 const authRedirectLoader = async ({request}) => {
@@ -28,7 +29,6 @@ if(!user) {
 
     if(user) {
       queryClient.setQueryData(['authUser'], user);
-      await useCartStore.getState().fetchGlobalCart();
     }
   } catch (error){
     user=null;
@@ -47,7 +47,6 @@ const isAuthPath = url.pathname === '/login' || url.pathname === '/signup';
  return { user };
 }
  
-
 
 
 const router = createBrowserRouter([
@@ -94,7 +93,7 @@ const router = createBrowserRouter([
             path : 'signup',
             element : <SignupPage />,
             loader: authRedirectLoader,
-            action : SignupAction(queryClient)
+            action : SignupAction,
          }
         ]
       },
@@ -305,18 +304,22 @@ export function RootLayout() {
   const navigation = useNavigation();
   const isTransitioning = navigation.state === 'loading';
   const totalCartItems = useCartStore((state)=>state.getTotalCartCount())
-  const revalidator = useRevalidator()
+
  
-  const {user} = useRouteLoaderData() || {};
+const {data: user} = useAuth();
+
+
+  const revalidator = useRevalidator();
   const handleLogout = async()=>{
    try {
     await axiosInstance.post('/auth/logout');
    } catch (error) {
     console.log('Logout request failed:', error);
    } finally {
-    queryClient.setQueryData(['authUser'], undefined);
-    await queryClient.invalidateQueries({queryKey: ['authUser']});
-
+    queryClient.setQueryData(['authUser'], null);
+    
+    queryClient.removeQueries();
+    useCartStore.getState().clearCart();
     revalidator.revalidate();
     navigate('/')
    }

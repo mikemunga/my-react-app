@@ -2,7 +2,6 @@ import { queryClient } from "./Query";
 import { fetchCurrentUser } from "./useAuthStore";
 
 export const rootAuthLoader = async () => {
-  //on mount/ refresh we check the store for the user if the available we return the user if not maybe the store garbedge collected it we confirm the token in the cookie on the server then return the user or null;
   try{
     const  user  = await queryClient.query({
      queryKey: ['authUser'],
