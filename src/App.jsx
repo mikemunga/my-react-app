@@ -11,12 +11,12 @@ import { GuestLayout } from "./ProtectedRoute.jsx";
 import filteredRedirectUrl from "./routerGuard.jsx";
 import { AnimatePage } from "./AnimatedPage.jsx";
 import { rootAuthLoader } from "./AuthRoothLoader";
-import { useCartStore } from "./useCartStore.js";
 import { cartLoader } from "./cartLoader.js";
 import  Cartlist from './Cart.jsx';
 import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
 import {useAuth } from './useAuthStore.js';
+import useCart from "./useCartStore.js";
 
 
 const authRedirectLoader = async ({request}) => {
@@ -300,16 +300,15 @@ const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', b
 
 
 export function RootLayout() {
+  const {totalCount, user} = useCart()
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isTransitioning = navigation.state === 'loading';
-  const totalCartItems = useCartStore((state)=>state.getTotalCartCount())
-
- 
-const {data: user} = useAuth();
+  //const totalCartItems = useCartStore((state)=>state.getTotalCartCount())
 
 
   const revalidator = useRevalidator();
+  
   const handleLogout = async()=>{
    try {
     await axiosInstance.post('/auth/logout');
@@ -319,7 +318,7 @@ const {data: user} = useAuth();
     queryClient.setQueryData(['authUser'], null);
     
     queryClient.removeQueries();
-    useCartStore.getState().clearCart();
+   // useCartStore.getState().clearCart();
     revalidator.revalidate();
     navigate('/')
    }
@@ -347,7 +346,7 @@ const {data: user} = useAuth();
           
             <Link to="/" style={{ color: 'white', marginRight: '15px', textDecoration: 'none' }}>Home</Link>
 
-            <Link to="/cart" style={{ color:  "#1b776d" , textDecoration: 'none' , }}> [🛒{totalCartItems}] </Link>
+            <Link to="/cart" style={{ color:  "#1b776d" , textDecoration: 'none' , }}> [🛒{totalCount}] </Link>
             <Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>
 
             <button
@@ -400,6 +399,7 @@ export function HydrateFallback () {
 
 export function GlobalErrorElement() {
   const error = useRouteError();
+  const navigate = useNavigate();
 
   let title = 'Unexpected System Error.';
   let message = 'An error occurred while synchronizing store systems.';
@@ -423,8 +423,8 @@ if(isRouteErrorResponse(error)){
         <h1 style={{ color: '#222', marginBottom: '10px' }}>{title}</h1>
         <p style={{ color: '#666', marginBottom: '24px', lineHeight: '1.5' }}> <span style={{color: '#ad3636'}}>{message}</span></p>
        
-      <button onClick={()=> window.location.reload}>
-        Reload..
+      <button onClick={()=> navigate('/')}>
+        Return to Home page
       </button>
       </div>
     </div>

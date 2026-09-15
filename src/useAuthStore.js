@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axiosInstance from './axiosInstance';
 import { useQuery } from '@tanstack/react-query';
-import { useCartStore } from './useCartStore';
+//import { useCartStore } from './useCartStore';
 
 
 export const useAuthStore = create ((set) => ({
@@ -33,20 +33,12 @@ export async function fetchCurrentUser() {
             console.log('no user')
             throw new Error('No user session found')
         }
-
-        const user = response.data?.user;
-
-        if(user) {
-            const fetchGlobalCart = useCartStore.getState().fetchGlobalCart;
-            await fetchGlobalCart();
-        }
    
         return response.data?.user;
 
     }
 
 
-    
 export function useAuth() {
     return useQuery({                              
         queryKey: ['authUser'],
@@ -56,3 +48,6 @@ export function useAuth() {
         
     })
 }
+
+
+

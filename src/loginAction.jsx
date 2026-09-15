@@ -3,7 +3,6 @@ import axiosInstance from "./axiosInstance";
 import filteredRedirectUrl from "./routerGuard";
 import { redirect } from "react-router";
 import { queryClient } from "./Query";
-import { useCartStore} from "./useCartStore";
 
 
 export const LoginAction = async  ({request}) => {
@@ -17,8 +16,6 @@ const data = Object.fromEntries(formData);
   
   if (user){
    queryClient.setQueryData(['authUser'], user);
-   const fetchGlobalCart = useCartStore.getState().fetchGlobalCart;
-    await fetchGlobalCart();
   }
 
    const targetDestination = filteredRedirectUrl(data.redirectTo) || '/';
@@ -27,7 +24,7 @@ const data = Object.fromEntries(formData);
 
   }catch(error){
    return {
-    succsess: false,
+    success: false,
     error : error.response?.data?.message || 'Login Failed.',
     errors: error.response?.data?.errors || null,
    }

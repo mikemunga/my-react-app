@@ -1,22 +1,21 @@
 
-import {  Link, useLoaderData, useNavigation, useFetcher , useLocation, useNavigate} from "react-router";
+import {  Link, useLoaderData,  useFetcher , useLocation, useNavigate} from "react-router";
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
-import { useCartStore } from "./useCartStore.js";
+import useCart from './useCartStore.js'
+
 
 export default function ProductDetails() {
   const fetcher = useFetcher();
-  const navigation = useNavigation();
-  const isLoading =navigation.state === 'loading';
   const product = useLoaderData();
   const isAdding = fetcher.state === 'submitting';
   const location = useLocation();
   const navigate = useNavigate();
-  const handleAddToCart = useCartStore((state) => state.handleAddToCart)
-
+  //const handleAddToCart = useCartStore((state) => state.handleAddToCart)
+ const {handleAddToCart, isAddingToCart} = useCart();
   
   const {data: user} =useAuth();
-  const [  ishovered,setIsHovered] = useState(false);
+  const [ ishovered, setIsHovered] = useState(false);
   
   const containerRef = useRef(null);
   const zooImref = useRef(null)
@@ -47,23 +46,19 @@ export default function ProductDetails() {
    }
   }
   
- 
- 
 
   const onCartClick = () => {
 
     if(user){
       handleAddToCart(product.id)
+      navigate('/')
+      return;
     }else {
-      const currentMemory = location.pathname + (location.search || '/');
+      const currentMemory = location?.pathname + (location.search || '/');
       navigate(`/cart?redirectTo=${encodeURIComponent(currentMemory)}`)
     }
   }
  
-   
-  if (isLoading) return <p style={{ padding: '120px 40px' }}>Loading product details...</p>;
-  if (!product) return <p style={{ padding: '120px 40px' }}>Product not found.</p>;
-
   return (
     <div
       style={{ padding: '120px 40px', fontFamily: 'sans-serif' }}>
@@ -108,7 +103,7 @@ export default function ProductDetails() {
           <button
           onClick={onCartClick}
            type="button"
-           disabled={isAdding}
+           disabled={isAddingToCart}
             style={{
              boxShadow: isAdding ? 'none' : '0 4px 6px rgba(255, 71, 71, 0.2)',
              transform : 'translateY()px)',

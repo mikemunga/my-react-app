@@ -2,7 +2,6 @@
 import {Form ,Link, useActionData} from 'react-router';
 import axiosInstance from './axiosInstance';
 import { queryClient } from './Query';
-import { useCartStore} from "./useCartStore";
 
 
 export default function SignupPage() { 
@@ -103,9 +102,6 @@ export const SignupAction =  async ({ request }) => {
     
   if (response.data?.data?.user)
     queryClient.setQueryData(['authUser'], response.data.data.user);
-    const fetchGlobalCart = useCartStore.getState().fetchGlobalCart;
-    await fetchGlobalCart();
-
   return {success: true}
    
   }catch(error){

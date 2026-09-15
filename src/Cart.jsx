@@ -1,16 +1,15 @@
 
 import {  useNavigate, useSearchParams} from "react-router";
-import { useCartStore  } from "./useCartStore.js";
-import { queryClient } from "./Query.js";
+import useCart from './useCartStore.js'
 
 
  export   function CartList(){
-    const liveUser = queryClient.getQueryData(['authUser']);
+    const {data:cartItems = [], user, isLoading, handleUpdateQuantity, totalCount} = useCart()
     const navigate = useNavigate();
-    const cartItems  = useCartStore((state) => state.cartItems);
-    const totatlItems = useCartStore((state) => state.getTotalCartCount());    
-    const handleUpdateQuantity =useCartStore((state) => state.handleUpdateQuantity)
-    if(!liveUser){
+    if(isLoading){
+        return <div style={{padding:'40px', textAlign:'center'}}>Loading your Cart...</div>
+    }
+    if(!user){
     return <CartAuthWall/>
     }
 
@@ -19,7 +18,7 @@ import { queryClient } from "./Query.js";
         <div style={{display:'grid', gridTemplateColumns:cartItems.length > 0 ? '2fr 1fr': '1fr', gap: '30px', fontFamily: 'sans-serif', paddingTop: '150px'}}>
             <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.5'}}>
                 <h2 style={{margin: '0 0 20px 0', fontSize: '20px', borderBottom: '2px solid #f0f0f0', padding: '15px'}}>
-                    Shopping Basket ({totatlItems} {totatlItems ===1 ? 'Item' : 'Items'})
+                    Shopping Basket ({totalCount} {totalCount ===1 ? 'Item' : 'Items'})
                 </h2>
 
                 {cartItems.length === 0 ?(
@@ -38,14 +37,14 @@ import { queryClient } from "./Query.js";
                                 <h4 style={{margin: '0 0 8px 0', fontSize: '15px',  color: '#262626'}}>{item.title}</h4>
                                 <p style={{margin :'0 0 12px', fontSize: '13px', color: '#8c8c8c'}}>Category: {item.category}</p>
 
-                                <button onClick={()=> handleUpdateQuantity(item.cart_item_id, item.quantity, -1)} 
+                                <button onClick={()=> handleUpdateQuantity({cartItemId: item.cart_item_id, currentQuantity: item.quantity, changeFactor: -1})} 
                                 
                                  style={{width: '28px', height: '28px', borderRadius:'4px', border: '1px solid #d9d9d9', background: '#fff', cursor: 'pointer', fontWeight: 'bold'}}> - </button>
                             
                     
                                 <span style={{fontWeight: 'bold', maxWidth: '20px', textAlign: 'center'}}>{item.quantity}</span>
 
-                                 <button onClick={()=> handleUpdateQuantity(item.cart_item_id, item.quantity, 1)}
+                                 <button onClick={()=> handleUpdateQuantity({cartItemId: item.cart_item_id, currentQuantity: item.quantity, changeFactor: 1})}
                                  
 
                                  style=      {{width: '28px', height: '28px', borderRadius:'4px', border: '1px solid #d9d9d9',  background: '#fff', cursor: 'pointer', fontWeight: 'bold'}}> + </button>

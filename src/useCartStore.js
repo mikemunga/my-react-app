@@ -1,63 +1,67 @@
-import { create } from "zustand";
+
 import axiosInstance from "./axiosInstance";
+import { useAuth} from "./useAuthStore";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 
 
-export const  useCartStore = create((set, get) => ({
-    cartItems: [],
-    count:0,
-
-    updateCount: () => set((state)=>(
-      {count: state.count +1}
-    )),
 
 
 
-    fetchGlobalCart : async () => {
-        try{
-            const response = await axiosInstance.get('/cart');
-            set ({cartItems: Array.isArray(response.data)? response.data: [] })
+export default function useCart() {
+  const queryClient= useQueryClient()
+    const {data: user, isLoading:isAuthLoading} = useAuth();
 
-            get().getTotalCartCount()
-        } catch (error) {
-            console.log('Error fetching cart:', error);
-        }
-    },
+    const query= useQuery({
+        queryKey: ['cart', user?.id],
+        queryFn: async () => {
+            const { data } = await axiosInstance.get('/cart');
+            return data;
+        },
 
-
-    clearCart: () => set({cartItems: []}),
-
-    getTotalCartCount: () => {
-        return get().cartItems.reduce((total, item) => total + (item.quantity || 1), 0)
-    },
-
-
-
+        enabled: !! user,
+    });
     
-    handleUpdateQuantity: async (cartItemId, currentQuantity, changeFactor) => {
+    const handleAddToCart = useMutation({
+      mutationFn: async (productId) => {
+        return await axiosInstance.post('/cart', {item_id: productId})
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: ['cart', user?.id]});
+      }
+    });
+
+    const handleUpdateQuantity = useMutation({
+      mutationFn: async ({cartItemId, currentQuantity, changeFactor}) => {
         const newQuantity = currentQuantity + changeFactor;
-       
+
         if(newQuantity <=0) {
-
-          set((state) => ({
-            cartItemItems: state.cartItems.filter(item => item.cart_item_id !==cartItemId)
-          }));
-
-           await axiosInstance.delete(`/cart/${cartItemId}`);
-        } else {
-          await axiosInstance.put(`/cart/${cartItemId}`, {
-            quantity : newQuantity
+          return await axiosInstance.delete(`/cart/${cartItemId}`)
+        }else{
+          return await axiosInstance.put(`/cart/${cartItemId}`, {
+            quantity: newQuantity
           });
         }
-      await get().fetchGlobalCart();
-     await get().getTotalCartCount()
-    },
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: ['cart', user?.id]})
+      },
+    });
 
-    handleAddToCart: async (productId) => {
-      await axiosInstance.post('/cart', {item_id: productId});
+    const carItems = query?.data || [];
+    const totalCount = carItems.reduce((total, item) => total+(item.quantity || 1), 0);
 
-      await get().fetchGlobalCart();
+    return {
+      ...query,
+      carItems,
+      totalCount,
+      user,
+      isAuthLoading,
+
+      handleAddToCart: handleAddToCart.mutate,
+      isAddingToCart: handleAddToCart.isPending,
+      handleUpdateQuantity: handleUpdateQuantity.mutate,
+      isUpadatingCartQuantity: handleUpdateQuantity
     }
 
   }
-))
