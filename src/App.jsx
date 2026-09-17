@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  useLoaderData,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator,} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -15,7 +15,7 @@ import { cartLoader } from "./cartLoader.js";
 import  Cartlist from './Cart.jsx';
 import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
-import {useAuth } from './useAuthStore.js';
+import useItems from "./useItems.js";
 import useCart from "./useCartStore.js";
 
 
@@ -65,7 +65,6 @@ const router = createBrowserRouter([
       element: <MyShop/>,
       loader: async (args) => {
         await rootAuthLoader(args);
-        return itemsLoader(args);
       }
       },
       {
@@ -131,30 +130,12 @@ export default  function App(){
   )
 }
 //the loader
-async function itemsLoader ({request}){
-try{
-  const currentUrl = new URL(request.url);
-  const activeCategory = currentUrl.searchParams.get('category')||'';
-  const searchWord = currentUrl.searchParams.get('search')||'';
-  const response = await axiosInstance.get('/items',{
-    params : {
-      category : activeCategory,
-      search: searchWord
-    }
-  })
-  return response?.data
- }catch(error){
-  if (error.name === 'CanceledError' || error.message === 'canceled'){
-    return[]
-  }
-  throw error;
- }
-}
+
 
 
 
 function MyShop() {
-  const items  = useLoaderData();
+  const {data: items=[], isLoading, error, page} = useItems();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get('category') || 'All Products';
   const [searchWord, setSearchWord] = useState(searchParams.get('search') || '')
@@ -176,8 +157,18 @@ function MyShop() {
    }else {
     newParams.delete('search');
    }
+   newParams.set(page, '1')
    setSearchParams(newParams);
   }
+
+  if(isLoading){
+    return <div style={{display: 'flext', alignItems:'center', justifyContent:'center'}}>Loading our catalog....</div>
+  }
+
+  if (error){
+    return <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>Something went wrong. Please check your connection.</div>
+  }
+
 
   const buildPath = (category) => {
     const params = new URLSearchParams();
@@ -274,7 +265,9 @@ function MyShop() {
                     <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#FF4747' }}>KSH {item.price}</span>
                     <span style={{ fontSize: '12px', color: '#999' }}>⭐ {item.rating || '4.5'}</span>
                   </div>
+                  
                 </div>
+                
               </Link>
               
             ))
@@ -300,11 +293,13 @@ const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', b
 
 
 export function RootLayout() {
+  const {page, data: items=[]} = useItems()
   const {totalCount, user} = useCart()
   const navigate = useNavigate();
   const navigation = useNavigation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isTransitioning = navigation.state === 'loading';
-  //const totalCartItems = useCartStore((state)=>state.getTotalCartCount())
+ 
 
 
   const revalidator = useRevalidator();
@@ -318,10 +313,16 @@ export function RootLayout() {
     queryClient.setQueryData(['authUser'], null);
     
     queryClient.removeQueries();
-   // useCartStore.getState().clearCart();
+  
     revalidator.revalidate();
     navigate('/')
    }
+  }
+
+  const handleNextPage = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page',(page + 1).toString());
+    setSearchParams(newParams)
   }
 
   return (
@@ -366,6 +367,17 @@ export function RootLayout() {
         <AnimatePage key ={location.pathname}>
         <Outlet />
         </AnimatePage>
+       
+        {location.pathname === '/' && items.length > 0 && (
+          <div>
+          <span>Current Page: {page} </span>
+          <button
+        disabled={items.length < 8}
+        onClick={handleNextPage}
+        >Next</button>
+        </div>
+        )}
+       
       </main>
 
       <footer style={{ background: '#f3f4f6', padding: '15px', textAlign: 'center', borderTop: '2px solid #e5e7eb' , paddingBlock:'24px 0', textAlignLast: 'center' , color: '#6b7280', fontSize: '0.875rem'}}>
