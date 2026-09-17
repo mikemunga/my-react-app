@@ -253,7 +253,7 @@ function MyShop() {
                 >
                 
                 <div style={{ height: '200px', background: '#f7f7f7', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
-                  <img src={item.image || 'https://placeholder.com'} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  <img src={item?.image || 'https://placeholder.com'} alt={item?.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 </div>
                
               
@@ -293,7 +293,7 @@ const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', b
 
 
 export function RootLayout() {
-  const {page, data: items=[]} = useItems()
+  const {page, data: items=[], isLoading, error} = useItems()
   const {totalCount, user} = useCart()
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -324,6 +324,8 @@ export function RootLayout() {
     newParams.set('page',(page + 1).toString());
     setSearchParams(newParams)
   }
+
+ 
 
   return (
     <div style={{ display:'grid', minHeight:'100vh', position:'relative', gridTemplateColumns:'1fr'}}>

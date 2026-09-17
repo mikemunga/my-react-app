@@ -78,7 +78,7 @@ export default function ProductDetails() {
           position:'relative', width:'100%', maxWidth:'450px', display: 'flex', aspectRatio:'1/1', overflow:'hidden', borderRadius:'12px', border:'1px solid #e2e8f0', background:'#fff', justifyContent:'center',alignItems:'center', cursor:'zoom-in'
           }}>
 
-          <img ref={zooImref} src={product.image} alt={product.title} style={{ width: '100%', height: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block', transform: '0.1s ease-out, transform-origin 0.1s ease-out'}} 
+          <img ref={zooImref} src={product?.image} alt={product?.title} style={{ width: '100%', height: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block', transform: '0.1s ease-out, transform-origin 0.1s ease-out'}} 
          />
          <div> 
           </div>
@@ -87,15 +87,15 @@ export default function ProductDetails() {
        
 
         <div style={{ flex: 1 }}>
-          <span style={{ textTransform: 'uppercase', fontSize: '12px', color: '#999', fontWeight: 'bold' }}>{product.category}</span>
-          <h1 style={{ fontSize: '1.5rem', margin: '10px 0' }}>{product.title}</h1>
-          <p style={{ fontSize: '15px', color: '#555' }}>{product.name}</p>
+          <span style={{ textTransform: 'uppercase', fontSize: '12px', color: '#999', fontWeight: 'bold' }}>{product?.category}</span>
+          <h1 style={{ fontSize: '1.5rem', margin: '10px 0' }}>{product?.title}</h1>
+          <p style={{ fontSize: '15px', color: '#555' }}>{product?.name}</p>
          
-          <h2 style={{ color: '#FF4747', fontSize: '2rem', margin: '20px 0' }}>KSH {product.price}</h2>
+          <h2 style={{ color: '#FF4747', fontSize: '2rem', margin: '20px 0' }}>KSH {product?.price}</h2>
          
           <div style={{ borderTop: '1px solid #eee', borderBottom: '1px solid #eee', padding: '20px 0', margin: '20px 0' }}>
             <h4 style={{ margin: '0 0 10px 0' }}>Product Description</h4>
-            <p style={{ lineHeight: '1.6', color: '#444' }}>{product.description || "No description provided for this item."}</p>
+            <p style={{ lineHeight: '1.6', color: '#444' }}>{product?.description || "No description provided for this item."}</p>
       
           </div>
           
