@@ -16,9 +16,6 @@ export default function useItems(){
             });
             return data;
         },
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 5
     })
     return{...query, page, search,category};
 }

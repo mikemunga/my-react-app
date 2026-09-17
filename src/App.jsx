@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator,} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -17,6 +17,7 @@ import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
 import useItems from "./useItems.js";
 import useCart from "./useCartStore.js";
+import WaveBarSpinner from "./WaveBarsSpinner.jsx";
 
 
 const authRedirectLoader = async ({request}) => {
@@ -54,33 +55,42 @@ const router = createBrowserRouter([
      id: 'root',
      path: '/',
      element: <RootLayout/>,
-     loader : rootAuthLoader,
+     
      HydrateFallback :HydrateFallback,
      errorElement: <GlobalErrorElement />,
-
      shouldRevalidate: () => true,
+     loader: () => {
+      return {
+        authPromise: rootAuthLoader(),
+      }
+     },
      children: [
       {
       index: true,
       element: <MyShop/>,
-      loader: async (args) => {
-        await rootAuthLoader(args);
-      }
       },
       {
         path: 'cart',
         element: <Cartlist/>,
-        loader: cartLoader
+        loader: (args) => {
+          return {
+            cartPromise: cartLoader(args)
+          }
+        }
       },
       {
         path :'product/:id',
         element: <ProductDetails />,
         loader :productDetailsLoader,
       },
+    ]
+  },
 
-      {
+
+    {
 
         element : <GuestLayout />,
+        errorElement: <GlobalErrorElement/>,
         children : [
          {
         path :'login',
@@ -96,13 +106,7 @@ const router = createBrowserRouter([
          }
         ]
       },
-        {
-            path: 'cart',
-            element: <Cartlist/>,
-            loader: cartLoader
-          },
-    ]
-  },
+
   {
     path: '*',
     element : (
@@ -161,9 +165,18 @@ function MyShop() {
    setSearchParams(newParams);
   }
 
+
+
   if(isLoading){
-    return <div style={{display: 'flext', alignItems:'center', justifyContent:'center'}}>Loading our catalog....</div>
+  
+    return ( <div style={{minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
+        <WaveBarSpinner text="Fetching products.."/>
+      </div>
+    ) 
   }
+
+ 
+
 
   if (error){
     return <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>Something went wrong. Please check your connection.</div>
@@ -350,7 +363,9 @@ export function RootLayout() {
             <Link to="/" style={{ color: 'white', marginRight: '15px', textDecoration: 'none' }}>Home</Link>
 
             <Link to="/cart" style={{ color:  "#1b776d" , textDecoration: 'none' , }}> [🛒{totalCount}] </Link>
-            <Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>
+
+            {!user && (<Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>)}
+           
 
             <button
             disabled={!user}
