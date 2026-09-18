@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useLocation} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useLocation, useNavigation} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -130,11 +130,14 @@ export default  function App(){
 }
 
 function MyShop() {
-  const {data: items=[], error, page} = useItems();
+  const {data: items=[], error, page } = useItems();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get('category') || 'All Products';
   const [searchWord, setSearchWord] = useState(searchParams.get('search') || '')
   const currentSearchQuery = searchParams.get('search') || '';
+  const navigation = useNavigation();
+  const isLoadingItem = navigation.state === 'loading'
+
   
   useEffect(() => {
     setSearchWord(currentSearchQuery);
@@ -177,7 +180,13 @@ function MyShop() {
 
   });
 
- 
+ if(isLoadingItem){
+  return (
+    <div style={{display: 'flex', justifyContent:'center', alignItems: 'center', minHeight: '100vh'}}>
+      <WaveBarSpinner text="Loading item details.."/>
+    </div>
+  )
+ }
 
   return (
 
@@ -327,9 +336,9 @@ if(isLoadingDetails){
     )
 }
 
- if(isLoading && !location.state?.error){
+ if(isLoading){
   return(
-    <div style={{display:'flexy', justifyContent:'center', minHeight: '100vh'}}>
+    <div style={{display:'flex', justifyContent:'center', minHeight: '100vh'}}>
       <WaveBarSpinner/>
     </div>
   )
