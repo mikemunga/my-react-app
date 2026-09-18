@@ -86,6 +86,10 @@ const isSubmitting = navigation.state === 'submitting';
             Login
           </Link>
         </p>
+        <div style={{marginTop:'10px', display:'flex', justifyContent:'center'}}>
+          <Link to={'/'}>Continue as Guest!</Link>
+        </div>
+        
       </div>
     </div>
   );

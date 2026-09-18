@@ -2,10 +2,8 @@ import axios from "axios";
 import {toast} from 'sonner'
 const activeRequests= new Map();
 
-//helper function deterministicallt serialize objects regardless of key order
 function stableStringify(obj){
     if(!obj || typeof obj !== 'object') return JSON.stringify(obj);
-    //sort keys alphabetically
     return JSON.stringify(
         Object.keys(obj)
         .sort()
@@ -26,7 +24,6 @@ if(config.data){
 
     if(typeof FormData !== 'undefined' && config.data instanceof FormData){
         const formDataParts=[];
-        //Sort the entries if you need deterministic Formdata behaviour
         for (const[ key, value] of config.data.entries()){
             if(typeof File !== 'undefined' && value instanceof File){
                 formDataParts.push(`${key}:[File]${value.name}_${value.size}`);
@@ -48,17 +45,17 @@ if(config.data){
    return `${method}_${url}_PARAMS:${params}_BODY:${data}`;
 }
 
-//independent custom axios instance
+
 const axiosInstance=axios.create({
     baseURL:import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
     timeout: 10000,
     withCredentials: true
 });
 
-//request interceptors guard against duplicates
+
 axiosInstance.interceptors.request.use(
     (config)=>{   
-        //only intercept repeatable read operations (GET)
+       
         if(config.method?.toLowerCase() === 'get'){
             const requestKey = generateRequestKey(config);
             if(activeRequests.has(requestKey)){
@@ -86,7 +83,7 @@ axiosInstance.interceptors.request.use(
 )
 export default axiosInstance;
 
-//response inteceptor
+
 
 axiosInstance.interceptors.response.use(
     (response)=>{
@@ -106,6 +103,8 @@ axiosInstance.interceptors.response.use(
         if(error.code ==='ERR_CANCELED' || error.message === 'canceled'){
             return Promise.reject(error);
         }
+
+
 
         const status = error.response?.status;
         const backendData = error.response?.data;

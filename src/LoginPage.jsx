@@ -63,9 +63,10 @@ export default function LoginPage() {
               cursor: isSubmitting ? "not-allowed" : "pointer"
             }}
           >
+           
           {isSubmitting && <span style={styles.spinner}></span>}
-          {isSubmitting ? "Creating Account..." : "Sign In"}
-          </button>
+          {isSubmitting ? "Creating Account..." : "Sign In"}   
+          </button> 
         </Form>
 
         <p style={styles.footerText}>
@@ -74,6 +75,9 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
+            <div style={{display: 'flex', justifyContent:'center', marginTop:'8px'}}>
+            <Link to={'/'}>Contine as Guest</Link>
+            </div> 
       </div>
     </div>
   );

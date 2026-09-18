@@ -6,7 +6,7 @@ export default function useItems(){
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category') || '';
     const search = searchParams.get('search') || '';
-    const page=parseInt(searchParams.get('page'),9) || 1;
+    const page=parseInt(searchParams.get('page'),10) || 1;
 
     const query = useQuery({
         queryKey: ['items', {category, search, page}],
@@ -16,6 +16,7 @@ export default function useItems(){
             });
             return data;
         },
+     
     })
     return{...query, page, search,category};
 }

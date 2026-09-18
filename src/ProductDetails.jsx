@@ -2,15 +2,16 @@
 import {  Link, useLoaderData,  useFetcher , useLocation, useNavigate} from "react-router";
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
-import useCart from './useCartStore.js'
+import useCart from './useCartStore.js';
+import WaveBarSpinner from "./WaveBarsSpinner.jsx";
+import useItems from "./useItems.js";
 
 
 export default function ProductDetails() {
-  const fetcher = useFetcher();
   const product = useLoaderData();
-  const isAdding = fetcher.state === 'submitting';
   const location = useLocation();
   const navigate = useNavigate();
+  const isAdding = location.state?.loading || false;
   //const handleAddToCart = useCartStore((state) => state.handleAddToCart)
  const {handleAddToCart, isAddingToCart} = useCart();
   
@@ -59,6 +60,14 @@ export default function ProductDetails() {
     }
   }
  
+if(isAdding){
+  
+    return ( <div style={{minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
+        <WaveBarSpinner text="Fetching products.."/>
+      </div>
+    ) 
+  }
+
   return (
     <div
       style={{ padding: '120px 40px', fontFamily: 'sans-serif' }}>

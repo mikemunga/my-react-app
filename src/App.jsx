@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse,  useNavigation, useSearchParams, useRouteError, NavLink, redirect, useRevalidator} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useLocation} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -11,7 +11,6 @@ import { GuestLayout } from "./ProtectedRoute.jsx";
 import filteredRedirectUrl from "./routerGuard.jsx";
 import { AnimatePage } from "./AnimatedPage.jsx";
 import { rootAuthLoader } from "./AuthRoothLoader";
-import { cartLoader } from "./cartLoader.js";
 import  Cartlist from './Cart.jsx';
 import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
@@ -51,20 +50,22 @@ const isAuthPath = url.pathname === '/login' || url.pathname === '/signup';
 
 
 const router = createBrowserRouter([
-  {
+
+    {
+      HydrateFallback: HydrateFallback,
+      errorElement: <GlobalErrorElement/>,
+      children:[
+       {
      id: 'root',
      path: '/',
      element: <RootLayout/>,
-     
-     HydrateFallback :HydrateFallback,
-     errorElement: <GlobalErrorElement />,
-     shouldRevalidate: () => true,
-     loader: () => {
-      return {
-        authPromise: rootAuthLoader(),
+     loader: async () => {
+     const user = await rootAuthLoader();
+     return {
+      user
       }
-     },
-     children: [
+      },
+       children: [
       {
       index: true,
       element: <MyShop/>,
@@ -72,40 +73,34 @@ const router = createBrowserRouter([
       {
         path: 'cart',
         element: <Cartlist/>,
-        loader: (args) => {
-          return {
-            cartPromise: cartLoader(args)
-          }
-        }
       },
+
       {
         path :'product/:id',
         element: <ProductDetails />,
         loader :productDetailsLoader,
       },
-    ]
-  },
-
-
-    {
-
+      ]
+    },
+      {
         element : <GuestLayout />,
-        errorElement: <GlobalErrorElement/>,
         children : [
-         {
-        path :'login',
+        {
+           path :'login',
         element: <LoginPage />,
         loader: authRedirectLoader,
-        action :  LoginAction
+        action :  LoginAction,
         },
-        {
+          {
             path : 'signup',
             element : <SignupPage />,
             loader: authRedirectLoader,
             action : SignupAction,
          }
         ]
-      },
+      }
+      ]
+    },
 
   {
     path: '*',
@@ -133,13 +128,9 @@ export default  function App(){
     </>
   )
 }
-//the loader
-
-
-
 
 function MyShop() {
-  const {data: items=[], isLoading, error, page} = useItems();
+  const {data: items=[], error, page} = useItems();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get('category') || 'All Products';
   const [searchWord, setSearchWord] = useState(searchParams.get('search') || '')
@@ -164,19 +155,7 @@ function MyShop() {
    newParams.set(page, '1')
    setSearchParams(newParams);
   }
-
-
-
-  if(isLoading){
-  
-    return ( <div style={{minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
-        <WaveBarSpinner text="Fetching products.."/>
-      </div>
-    ) 
-  }
-
  
-
 
   if (error){
     return <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>Something went wrong. Please check your connection.</div>
@@ -186,7 +165,7 @@ function MyShop() {
   const buildPath = (category) => {
     const params = new URLSearchParams();
     if(category) params.set('category',category);
-    //if(currentSearch) params.set('search', currentSearch);
+
     return `/?${params.toString()}`;
   }
  
@@ -198,9 +177,9 @@ function MyShop() {
 
   });
 
-  return (
+ 
 
-  
+  return (
 
     <div style={{ maxWidth: '1200px', margin: '0 auto', paddingTop:'5px',paddingLeft:'20px',paddingRight:'20px', fontFamily: 'sans-serif', marginTop:'60px' }}>
  
@@ -306,12 +285,13 @@ const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', b
 
 
 export function RootLayout() {
-  const {page, data: items=[], isLoading, error} = useItems()
+  const {page, data: items=[], isLoading} = useItems()
   const {totalCount, user} = useCart()
   const navigate = useNavigate();
-  const navigation = useNavigation();
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams();
-  const isTransitioning = navigation.state === 'loading';
+  const isLoadingDetails = location.state?.loading;
+ 
  
 
 
@@ -338,17 +318,25 @@ export function RootLayout() {
     setSearchParams(newParams)
   }
 
- 
+if(isLoadingDetails){
+   return(
+      <div style={{display: 'flex', justifyContent:'center', alignItems:'center', minHeight: '100vh'}}>
+        <WaveBarSpinner/>
+      </div>
+      
+    )
+}
+
+ if(isLoading && !location.state?.error){
+  return(
+    <div style={{display:'flexy', justifyContent:'center', minHeight: '100vh'}}>
+      <WaveBarSpinner/>
+    </div>
+  )
+ }
 
   return (
-    <div style={{ display:'grid', minHeight:'100vh', position:'relative', gridTemplateColumns:'1fr'}}>
-
-     {isTransitioning && (
-      <div style={{
-        position: 'fixed', top: 0, left: 0, height: '3px', background: '#ff4747', width: '100%', zIndex: 9999, animation: 'pulse 1.5s inifinite'
-      }}/>
-     )}
-      
+    <div style={{ display:'grid', minHeight:'100vh', position:'relative', gridTemplateColumns:'1fr'}}> 
 
       <header style={{ backgroundColor: '#1e293b', color: 'white', padding: '20px 40px', position: 'fixed', width: '100%', zIndex: 100, contain: 'layout paint paint', isolation:'isolate', boxShadow:'0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.6)'}}>
 

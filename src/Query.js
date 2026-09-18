@@ -4,9 +4,9 @@ import { QueryClient , onlineManager} from "@tanstack/react-query";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       retry: 3,
-      refetchOnReconnect:true,
+      refetchOnReconnect:false,
       refetchOnMount:true,
     }
   }
