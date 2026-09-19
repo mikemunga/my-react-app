@@ -31,7 +31,7 @@ A secure, performance-optimized full-stack application built with a modern React
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com
+   https://github.com/mikemunga/my-react-app
    ```
 
 2. Install dependencies:
