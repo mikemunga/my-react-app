@@ -338,28 +338,30 @@ if(isLoadingDetails){
 
  if(isLoading){
   return(
-    <div style={{display:'flex', justifyContent:'center', minHeight: '100vh'}}>
+    <div className="flex min-h-screen items-center justify-center bg-slate-900">
       <WaveBarSpinner/>
     </div>
   )
  }
 
   return (
-    <div style={{ display:'grid', minHeight:'100vh', position:'relative', gridTemplateColumns:'1fr'}}> 
+    <div className="relative grid min-h-screen grid-cols-1 bg-slate-950 text-slate-100 antialiased selection:bg-sky-500/30"> 
 
-      <header style={{ backgroundColor: '#1e293b', color: 'white', padding: '20px 40px', position: 'fixed', width: '100%', zIndex: 100, contain: 'layout paint paint', isolation:'isolate', boxShadow:'0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.6)'}}>
+      <header className="fixed top-0 z-50 w-full contain-layout backdrop-blur-md bg-slate-900/80 border-b border-slate-800 shadow-lg px[clamp(1rem, 4vw,2.5rem)] py[(clamp(0.75rem,2vw,1.25rem)]">
 
-        <div style={{ display :'flex', alignItems: 'baseline', gap: '12px', fontSize: '28px', justifyContent: 'space-around'}}>
+        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
 
-          <NavLink to="/" style={{...navLinkStyle, color: 'white', fontSize: '60px', fontWeight: 'bold', textDecoration: 'none' }}>
+          <NavLink to="/" className="font-black tracking-tight text-white transition-colors duration-200 hover:text-sky-blue-400 text-[(clamp(1.75rem,3.5vw,2.5rem)]">
             Easy Shop Store
           </NavLink>
 
-          <nav>
+          <nav className="flex items-center gap-[clamp(1rem,3vw,2rem)] text-[clamp(0.95rem,1.5vw,1.1rem)] font-medium">
           
-            <Link to="/" style={{ color: 'white', marginRight: '15px', textDecoration: 'none' }}>Home</Link>
+            <Link to="/"
+            className="text-slate-300 transition-colors duration-200 hover:text-white hover-underline underline-offset-4"
+            >Home</Link>
 
-            <Link to="/cart" style={{ color:  "#1b776d" , textDecoration: 'none' , }}> [🛒{totalCount}] </Link>
+            <Link to="/cart" className="rounded-full bg-sky-500 px-4 py-1.5 font-semibold text-black shadow-md shadow"> [🛒{totalCount}] </Link>
 
             {!user && (<Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>)}
            
