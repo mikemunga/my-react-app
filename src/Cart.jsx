@@ -86,38 +86,62 @@ import useCart from './useCartStore.js'
 }
 
 
+export  function CartAuthWall() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const originPath = searchParams.get('redirectTo') || '/';
+   const encodedOrigin = encodeURIComponent(originPath);
 
-export function CartAuthWall(){
+  return (
+    <div className="flex items-center justify-center min-h-[60vh] w-full px-4 select-none animate-fade-in pt-50">
 
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const originPath = searchParams.get('redirectTo') || '/';
-    const encodedOrigin = encodeURIComponent(originPath);
+      <div className="w-full max-w-md bg-white border border-zinc-200/80 rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-center">
+        
 
-
-    return(
-        <div style={{textAlign:'center', padding: '3rem', fontFamily: 'sans-serif', marginTop: '100px'}}>
-            <h2>Your Cart is waiting!</h2>
-            <p style={{color: '#666', marginBottom: '1.5rem'}}>
-                Please log in or create an account to view and manage your shopping cart items.
-            </p>
-            <div style={{display :'flex', gap: '1rem', justifyContent: 'center'}}>
-                <button
-                onClick ={() => navigate(`/login?redirectTo=${encodedOrigin}`)}
-                style={{padding: '0.5rem 1.5rem', cursor: 'pointer', background: '#007bff', color: '#fff', border: 'none', borderRadius: '4px'}}>
-                    Sign In
-                </button>
-                <button
-                onClick={() => navigate(`/signup?redirectTo=${encodedOrigin}`)}
-                style={{padding: '0.5rem 1.5rem ', cursor: 'pointer', background: '#f8f9fa', border: '1px solid #ccc', borderRadius: '4px'}}>
-                    Create Account
-                </button>
-                <button
-                style={{background: 'transparent', border:'none', color:'#007bff', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.9rem'}}>Continue Browsing</button>
-            </div>
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-50 text-red-500 mb-5">
+          <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://w3.org">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
+          </svg>
         </div>
-    );
 
+    
+        <h2 className="text-xl md:text-2xl font-black text-zinc-900 tracking-tight mb-2">
+          Your Cart is waiting!
+        </h2>
+        <p className="text-sm text-zinc-500 font-medium leading-relaxed mb-6">
+          Please log in or create an account to view and manage your shopping cart items.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center w-full mb-6">
+          
+    
+          <button
+            onClick={() => navigate(`/login?redirectTo=${encodedOrigin}`)}
+            className="h-11 px-6 bg-red-500 hover:bg-red-600 active:scale-98 text-white font-bold text-sm rounded-xl tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center"
+          >
+            Sign In
+          </button>
+          
+        
+          <button
+            onClick={() => navigate(`/signup?redirectTo=${encodedOrigin}`)}
+            className="h-11 px-6 bg-zinc-50 hover:bg-zinc-100 active:scale-98 text-zinc-800 font-bold text-sm rounded-xl border border-zinc-200 transition-all duration-150 cursor-pointer flex items-center justify-center"
+          >
+            Create Account
+          </button>
+
+        </div>
+
+        <button
+          onClick={() => navigate('/')}
+          className="text-sm font-semibold text-zinc-400 hover:text-red-500 transition-colors duration-200 cursor-pointer underline underline-offset-4"
+        >
+          Continue Browsing
+        </button>
+
+      </div>
+    </div>
+  );
 }
 
 

@@ -474,7 +474,7 @@ return (
 
 
 
- <div> 
+ <div  className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900 font-sans   antialiased selection:bg-red-500/10"> 
    <header>
     <div className="fixed top-0 left-0 right-0 z-50 w-full h-auto min-h-[3.5rem py-3 sm:p-y-0 sm:h-[4.5rem] px-[clamp(1rem,4vw,2.5rem)] bg-zinc-900 text-white shadow-md flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-4">
 
@@ -554,12 +554,24 @@ return (
         )}
        
       </main>
-
-      <footer style={{ background: '#f3f4f6', padding: '15px', textAlign: 'center', borderTop: '2px solid #e5e7eb' , paddingBlock:'24px 0', textAlignLast: 'center' , color: '#6b7280', fontSize: '0.875rem'}}>
-        <p>created by Michael M Munga on 2026/01/7.</p>
-      </footer>
-
-    </div>
+  <div className="w-full bg-zinc-900 text-zinc-400 py-10 mt-auto border-t border-zinc-900  select-none h-25 px-2.5">
+      <footer >
+       <div className="flex flex-col items-center md:items-start gap-1">
+         <p className="text-xs text-zinc-500 font-medium">
+          Handcrafted with precision by <span className="text-red-400 font-bold">Michael M. Munga</span>
+          </p>
+           </div>
+           <div className="flex flex-col items-center md:items-end gap-1 text-center    md:text-right">
+           <p className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+            Production Build
+          </p>
+            <p className="text-xs text-zinc-500 font-medium">
+            Released 7 Jan 2026
+           </p>
+         </div>
+     </footer>
+     </div>
+ </div>
   );
 }
 
