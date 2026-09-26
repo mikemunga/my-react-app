@@ -1,19 +1,17 @@
 
-import {  Link, useLoaderData,  useFetcher , useLocation, useNavigate} from "react-router";
+import {  Link, useLoaderData, useLocation, useNavigate} from "react-router";
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
 import useCart from './useCartStore.js';
-import WaveBarSpinner from "./WaveBarsSpinner.jsx";
-import useItems from "./useItems.js";
-
 
 export default function ProductDetails() {
   const product = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
   const isAdding = location.state?.loading || false;
-  //const handleAddToCart = useCartStore((state) => state.handleAddToCart)
- const {handleAddToCart, isAddingToCart} = useCart();
+
+
+  const {handleAddToCart, isAddingToCart} = useCart();
   
   const {data: user} =useAuth();
   const [ ishovered, setIsHovered] = useState(false);
@@ -36,12 +34,12 @@ export default function ProductDetails() {
   }
 
    const handleMouseMove = (e) => {
-   const rect = containerRef.current;
-   if(!rect) return;
-   const x = ((e.clientX - rect.left) / rect.width) * 100;
-   const y = ((e.clientY - rect.top) /rect.height) * 100;
+     const rect = containerRef.current;
+     if(!rect) return;
+     const x = ((e.clientX - rect.left) / rect.width) * 100;
+     const y = ((e.clientY - rect.top) /rect.height) * 100;
 
-   if(zooImref.current) {
+    if(zooImref.current) {
     zooImref.current.style.transformOrigin =`${x}% ${y}%`;
     zooImref.current.style.transform ='scale(2)';
    }
@@ -60,76 +58,100 @@ export default function ProductDetails() {
     }
   }
  
-if(isAdding){
-  
-    return ( <div style={{minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
-        <WaveBarSpinner text="Fetching products.."/>
-      </div>
-    ) 
-  }
-
+if (isAdding) {
   return (
-    <div
-      style={{ padding: '120px 40px', fontFamily: 'sans-serif' }}>
-      <Link to="/" style={{ color: '#FF4747', textDecoration: 'none', fontWeight: 'bold' }}>
-        ← Back to Catalog
-      </Link>
-      <div
-    
-       style={{ display: 'flex', gap: '50px', marginTop: '30px', alignItems: 'flex-start' }}>
-
-        {/** image div */}
-        <div 
-          onMouseMove={handleMouseMove}
-           onMouseEnter ={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-           style={{
-          position:'relative', width:'100%', maxWidth:'450px', display: 'flex', aspectRatio:'1/1', overflow:'hidden', borderRadius:'12px', border:'1px solid #e2e8f0', background:'#fff', justifyContent:'center',alignItems:'center', cursor:'zoom-in'
-          }}>
-
-          <img ref={zooImref} src={product?.image} alt={product?.title} style={{ width: '100%', height: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block', transform: '0.1s ease-out, transform-origin 0.1s ease-out'}} 
-         />
-         <div> 
-          </div>
-         </div>
+    <div className="flex items-center justify-center min-h-[75vh] w-full select-none">
+      <div className="flex items-center gap-1.5 h-16">
+        
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500/80 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
       
-       
-
-        <div style={{ flex: 1 }}>
-          <span style={{ textTransform: 'uppercase', fontSize: '12px', color: '#999', fontWeight: 'bold' }}>{product?.category}</span>
-          <h1 style={{ fontSize: '1.5rem', margin: '10px 0' }}>{product?.title}</h1>
-          <p style={{ fontSize: '15px', color: '#555' }}>{product?.name}</p>
-         
-          <h2 style={{ color: '#FF4747', fontSize: '2rem', margin: '20px 0' }}>KSH {product?.price}</h2>
-         
-          <div style={{ borderTop: '1px solid #eee', borderBottom: '1px solid #eee', padding: '20px 0', margin: '20px 0' }}>
-            <h4 style={{ margin: '0 0 10px 0' }}>Product Description</h4>
-            <p style={{ lineHeight: '1.6', color: '#444' }}>{product?.description || "No description provided for this item."}</p>
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
       
-          </div>
-          
-         
-          <button
-          onClick={onCartClick}
-           type="button"
-           disabled={isAddingToCart}
-            style={{
-             boxShadow: isAdding ? 'none' : '0 4px 6px rgba(255, 71, 71, 0.2)',
-             transform : 'translateY()px)',
-              transition : 'all 0.2s ease-n-out',
-              background: '#FF4747', color: 'white', border: 'none',
-              padding: '15px 40px', cursor:isAdding ? 'not-allowed': 'pointer', fontWeight: 'bold',
-              borderRadius: '6px'
-            }}
-            onMouseEnter={(e)=>{if(!isAdding){e.currentTarget.style.background='#E53E3E'; e.currentTarget.style.transform='translateY(-2px)';}}}
-            onMouseLeave={(e)=> {e.currentTarget.style.background=isAdding ? '#bcbcbc' : '#ff4747'; e.currentTarget.style.transform='translateY(0px)';}}
+        <span className="w-1.5 h-full bg-red-500/60 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+  
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
 
-          >
-          {isAdding ? 'Adding to Basket...' : 'Add to Cart'}
-          </button>
-        </div>
       </div>
     </div>
+  );
+}
+  return (
+     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 font-sans antialiased text-zinc-900 selection:bg-red-500/10">
+     <Link 
+      to="/" 
+      className="group inline-flex items-center gap-2 text-sm font-bold text-red-500 transition-colors duration-200 hover:text-red-600 mb-8">
+      <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1">←</span> 
+      Back to Catalog
+  </Link>
+  <div className="flex flex-col md:flex-row gap-8 lg:gap-14 items-start w-full">
+    <div 
+       onMouseMove={handleMouseMove}
+       onMouseEnter={handleMouseEnter}
+       onMouseLeave={handleMouseLeave}
+       className="relative w-full max-w-md md:max-w-[450px] aspect-square flex items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xs cursor-zoom-in mx-auto md:mx-0 shrink-0"
+    >
+      <img 
+        ref={zooImref} 
+        src={product?.image} 
+        alt={product?.title} 
+        className="w-full h-full max-h-[400px] object-contain block transition-transform duration-100 ease-out will-change-transform" 
+      />
+    </div>
+
+    <div className="flex-1 w-full flex flex-col">
+        <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2 block">
+        {product?.category}
+        </span>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-zinc-900 leading-tight mb-2">
+        {product?.title}
+        </h1>
+         {product?.name && (
+        <p className="text-sm font-medium text-zinc-500 mb-4">{product?.name}</p>
+      )}
+
+        <h2 className="text-2xl sm:text-3xl font-black text-red-500 tracking-tight my-4">
+          KSH {product?.price?.toLocaleString() || product?.price}
+        </h2>
+     
+      <div className="border-t border-b border-zinc-200/80 py-5 my-4">
+         <h4 className="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-2">
+          Product Description
+          </h4>
+          <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-medium">
+          {product?.description || "No description provided for this item."}
+         </p>
+      </div>
+      
+      <button
+          onClick={onCartClick}
+          type="button"
+          disabled={isAddingToCart}
+           className={`w-full max-w-xs h-12 font-bold text-sm md:text-base rounded-xl select-none transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer
+          ${isAddingToCart 
+            ? 'bg-zinc-300 text-zinc-500 shadow-none cursor-not-allowed' 
+            : 'bg-red-500 text-white shadow-red-500/10 hover:bg-red-600 hover:-translate-y-0.5 active:translate-y-0 active:scale-98'
+          }
+         `}
+        >
+        {isAddingToCart ? (
+          <>
+            <span className="animate-pulse"></span> Adding to Basket...
+          </>
+        ) : (
+          <>
+            <span>🛒</span> Add to Cart
+          </>
+        )}
+      </button>
+
+    </div>
+  </div>
+</div>       
   );
 }
 

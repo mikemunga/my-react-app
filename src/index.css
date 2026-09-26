@@ -1,1 +1,20 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+
+@layer utilities {
+  @keyframes waveGrow {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes waveShrink {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.3); }
+  }
+
+  .animate-wave-up {
+    animation: waveGrow 1.2s ease-in-out infinite;
+  }
+  .animate-wave-down {
+    animation: waveShrink 1.2s ease-in-out infinite;
+  }
+}

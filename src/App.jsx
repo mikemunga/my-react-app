@@ -16,7 +16,7 @@ import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
 import useItems from "./useItems.js";
 import useCart from "./useCartStore.js";
-import WaveBarSpinner from "./WaveBarsSpinner.jsx";
+import Div from "./practicetailwind.jsx";
 
 
 const authRedirectLoader = async ({request}) => {
@@ -112,6 +112,10 @@ const router = createBrowserRouter([
         Go Back Home</Link>
       </div>
     )
+  },
+  {
+    path:'/div',
+    element: <Div/>
   }
 
 ])
@@ -180,55 +184,138 @@ function MyShop() {
 
   });
 
- if(isLoadingItem){
+if (isLoadingItem) {
   return (
-    <div style={{display: 'flex', justifyContent:'center', alignItems: 'center', minHeight: '100vh'}}>
-      <WaveBarSpinner text="Loading item details.."/>
-    </div>
-  )
- }
-
-  return (
-
-    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingTop:'5px',paddingLeft:'20px',paddingRight:'20px', fontFamily: 'sans-serif', marginTop:'60px' }}>
- 
-     
-      <header style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <h1 style={{ color: '#da2222', fontSize: '2.5rem', fontWeight: 'bold' }}>{currentCategory.charAt(0).toLocaleUpperCase()+ currentCategory.slice(1)}</h1>
-      </header>
-
-    
+    <div className="flex items-center justify-center min-h-[75vh] w-full select-none">
+      <div className="flex items-center gap-1.5 h-16">
+        
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500/80 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
+      
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+      
+        <span className="w-1.5 h-full bg-red-500/60 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
   
-      <section style={{ display: 'flex', justifyContent: 'center', marginBottom: '25px' }}>
-        <Form method="get" style={{ display: 'flex', width: '100%', maxWidth: '600px' }}>
-          <input
-            type="text"
-            name="searchQuery"
-            value={searchWord}
-            onChange={(e) => setSearchWord(e.target.value)}
-            style={{ flex: 1, padding: '12px 20px', fontSize: '16px', border: '2px solid #FF4747', borderRadius: '25px 0 0 25px', outline: 'none' }}
-          />
-          <button
-          onClick={handleSearch}
-          type="submit" style={{ background: '#FF4747', color: 'white', border: 'none', padding: '0 25px', fontSize: '16px', borderRadius: '0 25px 25px 0', cursor: 'pointer' }}>
-            Search
-          </button>
-        </Form>
-      </section>
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+
+      </div>
+    </div>
+  );
+}
+  return (
+
+   <div className="pt-30">
+  
+  <header className="text-center mb-8 md:mb-12 pt-4 select-none">
+    <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-zinc-900 capitalize inline-block relative pb-3">
+     {currentCategory}
+     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-red-500 rounded-full"></span>
+     </h1>
+     <p className="text-xs md:text-sm text-zinc-500 font-medium mt-3 tracking-wide  uppercase">
+     Curated Collection
+     </p>
+   </header>
+
+
+<section className="flex justify-center w-full mb-8 md:mb-12 px-4">
+  <Form 
+    method="get" 
+    className="flex w-full max-w-xl md:max-w-2xl items-center shadow-xs rounded-full bg-white border-2 border-red-500 focus-within:ring-4 focus-within:ring-red-500/10 transition-all duration-200"
+  >
+    <div className="relative flex-1">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-zinc-400">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://w3.org">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      
+      <input
+        type="text"
+        name="searchQuery"
+        value={searchWord}
+        onChange={(e) => setSearchWord(e.target.value)}
+        placeholder="Search for items, brands..."
+        className="w-full h-12 pl-11 pr-4 bg-transparent text-zinc-900 placeholder-zinc-400 text-base font-medium rounded-l-full outline-hidden"
+      />
+    </div>
+    <button
+      onClick={handleSearch}
+      type="submit" 
+      className="h-12 px-6 md:px-8 bg-red-500 hover:bg-red-600 active:scale-98 font-bold text-white text-sm md:text-base rounded-r-full tracking-wide transition-all duration-150 cursor-pointer select-none"
+    >
+      Search
+    </button>
+  </Form>
+</section>
+
+
+
+
+  
    
-      {/* 3. CATEGORY NAVIGATION BAR */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', gap: '20px', marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '15px'}}>
-        <NavLink to={buildPath('')}style={{ getLinkStyle}}> Explore</NavLink>
-        <NavLink to={buildPath('electronics')}style={{getLinkStyle}}>Electronics</NavLink>
-        <NavLink to={buildPath('jewelery')}style={{getLinkStyle}}>Jewelry</NavLink>
-        <NavLink to={buildPath("men's clothing")} style={{getLinkStyle}}>Men's Clothing</NavLink>
-        <NavLink to={buildPath("women's clothing")} style={{getLinkStyle}}>Women's Clothing</NavLink>
-        <NavLink to={buildPath("groceries")} style={{getLinkStyle}}>Groceries</NavLink>
-      </nav>
+    
+  <nav className="hidden lg:flex items-center gap-6 xl:gap-8 font-medium p-20 justify-between">
+  <NavLink 
+    to={buildPath('')} 
+    className={({ isActive }) => 
+    `relative pb-1 transition-colors duration-200 select-none     after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+   }`}>
+    Explore
+  </NavLink>
+
+  <NavLink 
+    to={buildPath('electronics')} 
+    className={({ isActive }) => 
+    `relative pb-1 transition-colors duration-200 select-none   after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300   hover:after:scale-x-100 ${
+     isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+    }` }>
+    Electronics
+    </NavLink>
+
+  <NavLink 
+     to={buildPath('jewelery')} 
+      className={({ isActive }) => 
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+       }`}>
+      Jewelry
+  </NavLink>
+
+  <NavLink 
+      to={buildPath("men's clothing")} 
+      className={({ isActive }) => 
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+      }` }>
+    Men's Clothing
+  </NavLink>
+
+    <NavLink 
+      to={buildPath("women's clothing")} 
+      className={({ isActive }) => 
+        `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+        isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+        }`}>
+     Women's Clothing
+   </NavLink>
+
+   <NavLink 
+      to={buildPath("groceries")} 
+      className={({ isActive }) => 
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
+      }`}>
+       Groceries
+     </NavLink>
+</nav>
 
 
-      <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr', gap: '15px', padding:'20px 0', maxWidth:'1200px'
-      }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           {items && items.length > 0 ? (
           
             items.map((item) => (
@@ -258,7 +345,6 @@ function MyShop() {
                 </div>
                
               
-                {/* Product Metadata */}
                 <div style={{ padding: '12px 5px' }}>
                    <div style={{marginBottom:'0px'}}><p>{item.title}</p></div>
                   <p style={{ fontSize: '14px', color: '#333', margin: '0 0 8px 0', height: '40px', overflow: 'hidden' }}>{item.name || item.item_details}</p>
@@ -273,23 +359,31 @@ function MyShop() {
               
             ))
           ) : (
-            <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666' }}>No products match your criteria.</p>
+            <div className="col-span-full text-center py-12 px-4 bg-white border border-zinc-200/80 rounded-2xl shadow-xs max-w-md mx-auto w-full select-none animate-fade-in">
+              
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-100 text-zinc-400 mb-4">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://w3.org">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+              <h3 className="text-base font-bold text-zinc-900 tracking-tight">
+                No products found
+              </h3>
+
+              <p className="text-xs md:text-sm text-zinc-500 font-medium mt-1">
+                No products match your criteria. Try adjusting your keywords or clearing the search bar.
+              </p>
+            </div>
+
           )}
         </div>
-        </div>
+    </div>
       
 
   );
 }
 
-// Inline styles helper objects
-const navLinkStyle = { textDecoration: 'none', color: '#555', fontWeight: '600', padding: '5px 10px', borderRadius: '4px', fontSize: '15px' };
 const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', border: '1px solid #f0f0f0' };
-
-
-
-
-
 
 
 
@@ -327,61 +421,126 @@ export function RootLayout() {
     setSearchParams(newParams)
   }
 
-if(isLoadingDetails){
-   return(
-      <div style={{display: 'flex', justifyContent:'center', alignItems:'center', minHeight: '100vh'}}>
-        <WaveBarSpinner/>
-      </div>
+
+if (isLoadingDetails) {
+  return (
+    <div className="flex items-center justify-center min-h-[75vh] w-full select-none">
+      <div className="flex items-center gap-1.5 h-16">
+        
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500/80 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
       
-    )
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+      
+        <span className="w-1.5 h-full bg-red-500/60 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+  
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+
+      </div>
+    </div>
+  );
 }
 
- if(isLoading){
-  return(
-    <div className="flex min-h-screen items-center justify-center bg-slate-900">
-      <WaveBarSpinner/>
-    </div>
-  )
- }
 
+
+ if (isLoading) {
   return (
-    <div className="relative grid min-h-screen grid-cols-1 bg-slate-950 text-slate-100 antialiased selection:bg-sky-500/30"> 
+    <div className="flex items-center justify-center min-h-[75vh] w-full select-none">
+      <div className="flex items-center gap-1.5 h-16">
+        
 
-      <header className="fixed top-0 z-50 w-full contain-layout backdrop-blur-md bg-slate-900/80 border-b border-slate-800 shadow-lg px[clamp(1rem, 4vw,2.5rem)] py[(clamp(0.75rem,2vw,1.25rem)]">
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500/80 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+      
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500/60 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0.4s' }}></span>
+        
+        <span className="w-1.5 h-full bg-blue-500 rounded-full origin-center animate-wave-down" style={{ animationDelay: '0.2s' }}></span>
+        
+        <span className="w-1.5 h-full bg-red-500 rounded-full origin-center animate-wave-up" style={{ animationDelay: '0s' }}></span>
+      </div>
+    </div>
+  );
+}
 
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
 
-          <NavLink to="/" className="font-black tracking-tight text-white transition-colors duration-200 hover:text-sky-blue-400 text-[(clamp(1.75rem,3.5vw,2.5rem)]">
-            Easy Shop Store
-          </NavLink>
+return (
 
-          <nav className="flex items-center gap-[clamp(1rem,3vw,2rem)] text-[clamp(0.95rem,1.5vw,1.1rem)] font-medium">
-          
-            <Link to="/"
-            className="text-slate-300 transition-colors duration-200 hover:text-white hover-underline underline-offset-4"
-            >Home</Link>
 
-            <Link to="/cart" className="rounded-full bg-sky-500 px-4 py-1.5 font-semibold text-black shadow-md shadow"> [🛒{totalCount}] </Link>
 
-            {!user && (<Link to="/signup" style={{ color: "#1b776d" , textDecoration: 'none' , }}> Sign In </Link>)}
-           
+ <div> 
+   <header>
+    <div className="fixed top-0 left-0 right-0 z-50 w-full h-auto min-h-[3.5rem py-3 sm:p-y-0 sm:h-[4.5rem] px-[clamp(1rem,4vw,2.5rem)] bg-zinc-900 text-white shadow-md flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-4">
 
-            <button
-            disabled={!user}
-            onClick={handleLogout}
-            style={{ color:user? "#248d2ff8":"#660e0e1e",borederRadious:'4p', padding:'5px', fontSize:'24px'}}> Log Out </button>
-        </nav>
+      <NavLink 
+      to="/" 
+      className="text-xl md:text-2xl lg:text-3xl font-black tracking-tight whitespace-nowrap bg-linear-to-r from-red-500 via-zinc-100 to-white bg-clip-text text-transparent transition-all duration-300 hover:text-red-400 select-none"
+      style={{ backgroundPosition: 'right center' }}
+        >
+      Easy Shop Store 
+      </NavLink> 
 
-          
-        </div>
-      </header>
+
+
+   <div className="flex justify-between gap-2 sm:gap-10 items-baseline px-2 sm:px-4  md:px-6 w-full">
+      <Link 
+      to="/" 
+      className="relative inline-block text-sm md:text-base font-semibold text-slate-300 active:text-white pb-1 select-none transition-colors duration-200 lg:hover:text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 lg:hover:after:origin-bottom-left lg:hover:after:scale-x-100"
+       >
+      Home
+      </Link>
+
+     <nav className="flex items-center gap-4 md:gap-6"> 
+     <Link 
+      to="/cart" 
+      className="relative flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 font-semibold text-zinc-800 shadow-sm border border-zinc-200/50 transition-all duration-200 hover:bg-zinc-200/70 hover:shadow active:scale-95 text-xs md:text-sm">
+
+      <span className="text-base">🛒</span>
+      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold min-w-[20px] text-center">
+        {totalCount}
+      </span>
+      </Link>
+
+       {!user && (
+      <Link 
+        to="/signup" 
+        className="rounded-md px-3 py-1.5 text-xs md:text-sm font-semibold text-teal-600 transition-colors duration-200 hover:bg-teal-50"
+       >
+        Sign In
+       </Link>
+        )}
+
+       {user && (
+        <button
+        onClick={handleLogout}
+        className="text-xs md:text-sm font-semibold text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-md transition-colors duration-200 cursor-pointer"
+      > 
+        Log Out 
+      </button>
+       )}
+     </nav> 
+    </div>
+
+    </div>
+</header>
+
+
+
 
       <OfflineBanner />
       
       
-      <main style={{ flex: 1, padding: '20px', maxWidth: '1200px', width:'100%', margin: '40px auto', paddingg: '0 24px', boxSizing: 'border-box' }}>
+        <main>
         <AnimatePage key ={location.pathname}>
+        <div>
         <Outlet />
+        </div>
         </AnimatePage>
        
         {location.pathname === '/' && items.length > 0 && (
@@ -433,17 +592,17 @@ export function GlobalErrorElement() {
   let message = 'An error occurred while synchronizing store systems.';
   console.log('Caught app crash:', error)
      
-if(isRouteErrorResponse(error)){
-  if(error.status === 404){
-  title ='Page Not Found.';
-  message="The requested page doesn't exist.";
-  }else {
-    title =` Error ${error.status}`;
-    message = error.statusText || message
-  }
-} else if(error instanceof Error){
+   if(isRouteErrorResponse(error)){
+     if(error.status === 404){
+     title ='Page Not Found.';
+     message="The requested page doesn't exist.";
+    }else {
+      title =` Error ${error.status}`;
+     message = error.statusText || message
+     }
+    }else if(error instanceof Error){
   message = error.message;
-}
+   }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fcfcfc', padding: '20px', fontSize:'1rem' }}>
