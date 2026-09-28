@@ -28,7 +28,15 @@ export const useAuthStore = create ((set) => ({
 
 
 export async function fetchCurrentUser() {
+
+    const token = localStorage.getItem('authToken');
+
+
+    if(!token){
+        return null;
+    }
     
+    try{
         const response = await axiosInstance.get('/auth/me');
         if(!response.data || !response.data?.user) {
             console.log('no user')
@@ -43,16 +51,22 @@ export async function fetchCurrentUser() {
         }
    
         return response.data?.user;
-
+     } catch (error) {
+       // localStorage.removeItem('authToken');
+        return null;
+     }
+    
     }
 
 
-    
-export function useAuth() {
+  
+    export function useAuth() {
+    const tokenOnmount = localStorage.getItem('authToken')
     return useQuery({                              
         queryKey: ['authUser'],
         queryFn: fetchCurrentUser,
         retry: false,
+        enabled: !!tokenOnmount,
         staleTime: 1000 * 60 * 5,
         
     })

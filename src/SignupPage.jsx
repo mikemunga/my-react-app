@@ -103,6 +103,13 @@ export const SignupAction =  async ({ request }) => {
   
   try{
   const response= await axiosInstance.post('/auth/signup', data,{skipGlobalErrorHandler:true});
+
+   const token = response?.data?.token;
+
+  if(token) {
+    localStorage.setItem('authToken', token);
+  };
+
     
   if (response.data?.data?.user)
     queryClient.setQueryData(['authUser'], response.data.data.user);

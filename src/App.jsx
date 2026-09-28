@@ -406,10 +406,9 @@ export function RootLayout() {
    } catch (error) {
     console.log('Logout request failed:', error);
    } finally {
+    localStorage.removeItem('authToken')
     queryClient.setQueryData(['authUser'], null);
-    
     queryClient.removeQueries();
-  
     revalidator.revalidate();
     navigate('/')
    }

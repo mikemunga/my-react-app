@@ -12,6 +12,11 @@ const data = Object.fromEntries(formData);
   try{
   const response = await axiosInstance.post('/auth/login', data,{skipGlobalErrorHandler:true});
 
+  const token = response?.data?.token;
+  if(token) {
+    localStorage.setItem('authToken', token);
+  }
+
   const user = response?.data?.data?.user
   
   if (user){
