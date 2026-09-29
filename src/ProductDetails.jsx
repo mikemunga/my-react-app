@@ -81,14 +81,14 @@ if (isAdding) {
   );
 }
   return (
-     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 font-sans antialiased text-zinc-900 selection:bg-red-500/10">
+     <div className="w-full max-w-7xl mx-auto px-4 mt-4 sm:px-6 lg:px-8 pt-24 pb-16 font-sans antialiased text-zinc-900 selection:bg-red-500/10">
      <Link 
       to="/" 
       className="group inline-flex items-center gap-2 text-sm font-bold text-red-500 transition-colors duration-200 hover:text-red-600 mb-8">
       <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1">←</span> 
       Back to Catalog
   </Link>
-  <div className="flex flex-col md:flex-row gap-8 lg:gap-14 items-start w-full">
+  <div className="flex flex-col mt-5 md:flex-row gap-8 lg:gap-14 items-start w-full">
     <div 
        onMouseMove={handleMouseMove}
        onMouseEnter={handleMouseEnter}

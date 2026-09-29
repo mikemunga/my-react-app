@@ -315,7 +315,7 @@ if (isLoadingItem) {
 </nav>
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 px-2 md:grid-cols-3 gap-2">
           {items && items.length > 0 ? (
           
             items.map((item) => (
@@ -340,19 +340,37 @@ if (isLoadingItem) {
                 }}
                 >
                 
-                <div style={{ height: '200px', background: '#f7f7f7', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
-                  <img src={item?.image || 'https://placeholder.com'} alt={item?.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                <div className="relative aspect-square w-full bg-gray-50 p-3 flex items-center justify-center oveflow-hidden group">
+                  <img src={item?.image || 'https://placeholder.com'} alt={item?.name} className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"/>
                 </div>
                
-              
-                <div style={{ padding: '12px 5px' }}>
-                   <div style={{marginBottom:'0px'}}><p>{item.title}</p></div>
-                  <p style={{ fontSize: '14px', color: '#333', margin: '0 0 8px 0', height: '40px', overflow: 'hidden' }}>{item.name || item.item_details}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#FF4747' }}>KSH {item.price}</span>
-                    <span style={{ fontSize: '12px', color: '#999' }}>⭐ {item.rating || '4.5'}</span>
+                <div className="absolute bottom-2 right-2 fex-items-center gap-0.5 rounded-full bg-white/90 px-2 py0.5 text-[10px] font-semibold text-gray-700 backdrop-blu-xs shadow-xs">
+                    <span>⭐ {item.rating || '4.5'}</span>
+                    </div>
+            
+                <div className="flex flex-1 flex-col p-3 justify-between">
+                   <div className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-gray-800 leading-snug"><p>{item.title}</p></div>
+                  <h3>{item.name || item.item_details}</h3>
+                </div>
+
+                <div className="mt-2 items-baseline justify-between gap-1">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-semibold text-gray-900 uppercase tracking-wider text-red-500 text-[10px]">
+                      Ksh
+                      </span>
+                    <span className="trxt-base font-bold text-gray-900 leading-tight">
+                      {Number(item?.price).toLocaleString()}
+                    </span>
                   </div>
-                  
+                  <button
+                  type="button"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-900 text-white transition-colors active:bg-blue-600"
+                   aria-label="Add to cart"
+                  >
+                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                 </svg>
+                  </button>
                 </div>
                 
               </Link>
