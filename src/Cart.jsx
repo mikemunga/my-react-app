@@ -7,7 +7,7 @@ import useCart from './useCartStore.js'
     const {data:cartItems = [], user, isLoading, handleUpdateQuantity, totalCount} = useCart()
     const navigate = useNavigate();
     if(isLoading){
-        return <div style={{padding:'40px', textAlign:'center'}}>Loading your Cart...</div>
+        return <div className="flex justify-center items-center">Loading your Cart...</div>
     }
     if(!user){
     return <CartAuthWall/>
@@ -15,72 +15,93 @@ import useCart from './useCartStore.js'
 
 
     return(
-        <div style={{display:'grid', gridTemplateColumns:cartItems.length > 0 ? '2fr 1fr': '1fr', gap: '30px', fontFamily: 'sans-serif', paddingTop: '150px'}}>
+       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm border  border-gray-100 divide-y divide-gray-100 mt-30 h-50">
             <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.5'}}>
-                <h2 style={{margin: '0 0 20px 0', fontSize: '20px', borderBottom: '2px solid #f0f0f0', padding: '15px'}}>
-                    Shopping Basket ({totalCount} {totalCount ===1 ? 'Item' : 'Items'})
-                </h2>
+           <h2 style={{margin: '0 0 20px 0', fontSize: '20px', borderBottom: '2px solid#f0f0f0', padding: '15px'}}>
+               Shopping Basket ({totalCount} {totalCount ===1 ? 'Item' : 'Items'})
+          </h2>
 
-                {cartItems.length === 0 ?(
-                    <div style={{textAlign: 'center', padding: '40px 0'}}>
-                        <p style={{fontSize: '16px', color: '#8c8c8c', margin: '0 0 20px 0'}}>Your Shooping Basket is completely empty.</p>
-                        <button onClick={()=>navigate('/')} style={{padding: '10px 20px', backgroundColor: '#ff4d4f', color: '#fff', border: 'none', borderEndEndRadius: '4px', fontWeight: 'bold', cursor: 'pointer'}}>
-                            Continue Shopping
-                        </button>
-                        </div>
-                ) : (
-                    cartItems.map(item => (
-                        <div key={item.cart_item_id} style={{display: 'flex', gap: '20px', padding: '20px 0', borderBottom: '1px solid #f0f0f0', alignItems: 'center' }}>
-                            <img src={item.image} alt={item.id} style={{width: '90px', height: '90px', objectFit: 'contain'}}/>
 
-                            <div style={{flex: 1}}>
-                                <h4 style={{margin: '0 0 8px 0', fontSize: '15px',  color: '#262626'}}>{item.title}</h4>
-                                <p style={{margin :'0 0 12px', fontSize: '13px', color: '#8c8c8c'}}>Category: {item.category}</p>
+     {cartItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-md mx-auto animate-fade-in ">
+       <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6  text-red-500 animate-pulse">
+        <svg xmlns="http://w3.org" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+       </div>
 
-                                <button onClick={()=> handleUpdateQuantity({cartItemId: item.cart_item_id, currentQuantity: item.quantity, changeFactor: -1})} 
-                                
-                                 style={{width: '28px', height: '28px', borderRadius:'4px', border: '1px solid #d9d9d9', background: '#fff', cursor: 'pointer', fontWeight: 'bold'}}> - </button>
+         <h3 className="text-xl font-bold text-gray-900 tracking-tight mb-2">
+          Your shopping basket is empty
+         </h3>
+         <p className="text-sm text-gray-500 max-w-xs mb-8 leading-relaxed">
+         Looks like you haven't added anything to your cart yet. Explore our top categories to find something you love.
+         </p>
+         <button 
+         onClick={() => navigate('/')} 
+         className="w-full sm:w-auto px-8 py-3 bg-red-500 text-white font-semibold rounded-xl shadow-md shadow-red-100 hover:bg-red-600 active:scale-98 transition-all duration-200    select-none tracking-wide text-sm"
+          >
+          Continue Shopping
+         </button>
+        </div>
+       ): (
+             cartItems.map(item => (
+                <div key={item.cart_item_id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
+            
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-50 rounded-lg p-1 border border-gray-50 ">
+                 <img src={item.image} alt={item.id} 
+                 className="w-full h-full object-contain mix-blend-multiply"/>
+                 </div>
+
+                 <div className="flex-1 min-w-0 w-full flex flex-col sm:flex-row sm:items-center   sm:justify-between gap-3">
+                  <h4 style={{margin: '0 0 8px 0', fontSize: '15px',  color: '#262626'}}>{item.title}</h4>
+                 <p style={{margin :'0 0 12px', fontSize: '13px', color: '#8c8c8c'}}>Category: {item.category}</p>
+                  </div>
+
+                 <div className="flex items-center gap-1 self-start sm:self-center bg-gray-50 p-0.5  rounded-md border border-gray-200" >
+                   <button onClick={()=> handleUpdateQuantity({cartItemId: item.cart_item_id, currentQuantity: item.quantity, changeFactor: -1})} 
+                   className="w-8 h-8 flex items-center justify-center rounded text-gray-600 font-semibold hover:bg-white hover:text-black active:scale-95 transition-all select-none"
+                  aria-label="Decrease quantity"
+                   > - </button>
                             
-                    
-                                <span style={{fontWeight: 'bold', maxWidth: '20px', textAlign: 'center'}}>{item.quantity}</span>
-
-                                 <button onClick={()=> handleUpdateQuantity({cartItemId: item.cart_item_id, currentQuantity: item.quantity, changeFactor: 1})}
-                                 
-
-                                 style=      {{width: '28px', height: '28px', borderRadius:'4px', border: '1px solid #d9d9d9',  background: '#fff', cursor: 'pointer', fontWeight: 'bold'}}> + </button>
-                            </div>
-                        </div>
+                 <span className="w-8 text-center text-sm font-bold text-gray-800 select-none">
+                    {item.quantity}
+                 </span>
+                <button 
+                   onClick={() => handleUpdateQuantity({ cartItemId: item.cart_item_id , currentQuantity: item.quantity, changeFactor: 1 })}
+                   className="w-8 h-8 flex items-center justify-center rounded text-gray-600 font-semibold hover:bg-white hover:text-black active:scale-95 transition-all select-none"
+                   aria-label="Increase quantity">
+                          +
+                 </button>
+                  </div>
+                 </div>
                     ))
-                )}
-
+                  )}
              </div>
-
               
                 {cartItems.length > 0 && (
-                    <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05', height: 'fit-container'}}>
-                    <h3 style={{margin: '0 0 20px 0', fontSize: '18px', borderBottom: '1px solid #f0f0f0', paddingBottom: '12px'}}>Order Checkout Summary</h3>
+                  <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05', height: 'fit-container'}}>
+                   <h3 style={{margin: '0 0 20px 0', fontSize: '18px', borderBottom: '1px solid #f0f0f0', paddingBottom: '12px'}}>Order Checkout Summary</h3>
                     <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 12px 0', color: '#595959'}}>
-                        <span>Basket SubTotal:</span>
-                        <span>Ksh</span>
-                    </div>
+                   <span>Basket SubTotal:</span>
+                   <span>Ksh</span>
+                   </div>
 
                     <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 12px 0', color: '#595959'}}>
-                        <span>Shipping Fees:</span>
-                        <span style={{color: '#52c41a', fontWeight: 'bold'}}>FREE</span>
+                   <span>Shipping Fees:</span>
+                   <span style={{color: '#52c41a', fontWeight: 'bold'}}>FREE</span>
                     </div>
                     
                     <div style={{display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed #d9d9d9', padding: '15px', marginBottom: '24px'}}>
 
-                        <span style={{fontSize: '16px', fontWeight: 'bold'}}>Estimated Total</span>
-                        <span style={{fontSize: '20px', fontWeight: 'bold', color: '#ff4d4f'}}>Ksh </span>
+                    <span style={{fontSize: '16px', fontWeight: 'bold'}}>Estimated Total</span>
+                     <span style={{fontSize: '20px', fontWeight: 'bold', color: '#ff4d4f'}}>Ksh </span>
                     </div>
                     <button style={{width: '100%', padding:'14px', backgroundColor: '#ff4d4f' , color: '#fff,', border:'none', borderRadius:'4px',cursor: 'pointer', fontSize: '16px', fontWeight: 'bold'}}>
                         Secure Checkout M-PESA
                     </button>
                     </div>
+                    )}
 
-            
-                )}
         </div>
     )
 }
