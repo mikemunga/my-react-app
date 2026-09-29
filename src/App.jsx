@@ -571,24 +571,7 @@ return (
         )}
        
       </main>
-  <div className="w-full bg-zinc-900 text-zinc-400 py-10 mt-auto border-t border-zinc-900  select-none h-25 px-2.5">
-      <footer >
-       <div className="flex flex-col items-center md:items-start gap-1">
-         <p className="text-xs text-zinc-500 font-medium">
-          Handcrafted with precision by <span className="text-red-400 font-bold">Michael M. Munga</span>
-          </p>
-           </div>
-           <div className="flex flex-col items-center md:items-end gap-1 text-center    md:text-right">
-           <p className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
-            Production Build
-          </p>
-            <p className="text-xs text-zinc-500 font-medium">
-            Released 7 Jan 2026
-           </p>
-         </div>
-     </footer>
-     </div>
- </div>
+  </div>
   );
 }
 

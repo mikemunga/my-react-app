@@ -1,12 +1,6 @@
 
 import {  Form, Link ,  useNavigation, useSearchParams, useActionData} from "react-router";
 
-
-
-
-
-
-
 export default function LoginPage() {
 
   const actionData = useActionData();
@@ -14,7 +8,6 @@ export default function LoginPage() {
   const isSubmitting = navigation.state === 'submitting';
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/';
-
 
 
   return (
