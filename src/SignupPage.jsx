@@ -99,16 +99,9 @@ const isSubmitting = navigation.state === 'submitting';
 
 export const SignupAction =  async ({ request }) => {
   const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-  
+  const data = Object.fromEntries(formData); 
   try{
   const response= await axiosInstance.post('/auth/signup', data,{skipGlobalErrorHandler:true});
-
-   const token = response?.data?.token;
-
-  if(token) {
-    localStorage.setItem('authToken', token);
-  };
 
     
   if (response.data?.data?.user)
@@ -125,7 +118,7 @@ export const SignupAction =  async ({ request }) => {
 }
 
 
-// Complete styled framework layout matching modern UI aesthetics
+
 const styles = {
  container: {
     display: "flex",
