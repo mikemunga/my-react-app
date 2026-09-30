@@ -724,7 +724,7 @@ export function OfflineBanner() {
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
-      className="fixed bottom-0 left-0 right-0 z-9999 animate-slide-up bg-red-600 px-4 py-3 text-white shadow-2xl dark:bg-red-700 sm:py-3.5"
+      className="fixed bottom-0 left-0 right-0 z-9999 animate-slide-up bg-red-600 px-4 py-3 text-white shadow-2xl dark:bg-red-700 sm:py-3.5 mt-10"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-center space-x-3 text-center">
       
