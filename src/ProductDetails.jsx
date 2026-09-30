@@ -93,13 +93,13 @@ if (isAdding) {
        onMouseMove={handleMouseMove}
        onMouseEnter={handleMouseEnter}
        onMouseLeave={handleMouseLeave}
-       className="relative w-full max-w-md md:max-w-[450px] aspect-square flex items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xs cursor-zoom-in mx-auto md:mx-0 shrink-0"
+       className="relative w-full max-w-md md:max-w-112.5 aspect-square flex items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xs cursor-zoom-in mx-auto md:mx-0 shrink-0"
     >
       <img 
         ref={zooImref} 
         src={product?.image} 
         alt={product?.title} 
-        className="w-full h-full max-h-[400px] object-contain block transition-transform duration-100 ease-out will-change-transform" 
+        className="w-full h-full max-h-100 object-contain block transition-transform duration-100 ease-out will-change-transform" 
       />
     </div>
 

@@ -16,8 +16,7 @@ import { fetchCurrentUser } from "./useAuthStore.js";
 import { queryClient } from "./Query.js";
 import useItems from "./useItems.js";
 import useCart from "./useCartStore.js";
-import Div from "./practicetailwind.jsx";
-
+import { NotFoundElement } from "./notFoundElement.jsx";
 
 const authRedirectLoader = async ({request}) => {
   //cart fetching logic on mount/ refresh by checking the user state.
@@ -51,11 +50,11 @@ const isAuthPath = url.pathname === '/login' || url.pathname === '/signup';
 
 const router = createBrowserRouter([
 
-    {
+ {
       HydrateFallback: HydrateFallback,
       errorElement: <GlobalErrorElement/>,
       children:[
-       {
+   {
      id: 'root',
      path: '/',
      element: <RootLayout/>,
@@ -65,6 +64,7 @@ const router = createBrowserRouter([
       user
       }
       },
+
        children: [
       {
       index: true,
@@ -82,6 +82,7 @@ const router = createBrowserRouter([
       },
       ]
     },
+
       {
         element : <GuestLayout />,
         children : [
@@ -100,25 +101,18 @@ const router = createBrowserRouter([
         ]
       }
       ]
-    },
-
+  },
+   
   {
     path: '*',
-    element : (
-      <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight: '60vh', textAlign:'center', padding:'20px'}}>
-        <h1 style={{color: '#1e293b', fontSize:'32px', marginBottom:'10px'}}>Page Not Found</h1>
-        <p style={{color :'#64748b', marginBottom:'20px'}}>The requested page doesn't exist.</p>
-        <Link to ='/' style={{textDecoration: 'none', background:'#1e293b', color:'white', padding:'8px 16px', borederRadious:'8px', fontWeight :'500'}}>
-        Go Back Home</Link>
-      </div>
-    )
-  },
-  {
-    path:'/div',
-    element: <Div/>
+    element: NotFoundElement
   }
 
 ])
+
+
+
+
 
 
 export default  function App(){
@@ -164,9 +158,34 @@ function MyShop() {
   }
  
 
-  if (error){
-    return <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>Something went wrong. Please check your connection.</div>
-  }
+if (error) {
+  return (
+    <div 
+      role="alert" 
+      aria-live="assertive"
+      aria-atomic="true"
+      className="flex w-full min-h-50 flex-col items-center justify-center rounded-lg border border-red-100 bg-red-50/50 p-6 text-center dark:border-red-950/30 dark:bg-red-950/10"
+    >
+      <div className="flex flex-col items-center space-y-2 max-w-sm">
+    
+        <svg 
+          className="h-5 w-5 shrink-0 text-red-500 dark:text-red-400" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          strokeWidth="2" 
+          stroke="currentColor" 
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        </svg>
+
+        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+          Something went wrong. Please check your connection.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 
   const buildPath = (category) => {
@@ -262,7 +281,7 @@ if (isLoadingItem) {
   <NavLink 
     to={buildPath('')} 
     className={({ isActive }) => 
-    `relative pb-1 transition-colors duration-200 select-none     after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+    `relative pb-1 transition-colors duration-200 select-none     after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
    }`}>
     Explore
@@ -271,7 +290,7 @@ if (isLoadingItem) {
   <NavLink 
     to={buildPath('electronics')} 
     className={({ isActive }) => 
-    `relative pb-1 transition-colors duration-200 select-none   after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300   hover:after:scale-x-100 ${
+    `relative pb-1 transition-colors duration-200 select-none   after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300   hover:after:scale-x-100 ${
      isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
     }` }>
     Electronics
@@ -280,7 +299,7 @@ if (isLoadingItem) {
   <NavLink 
      to={buildPath('jewelery')} 
       className={({ isActive }) => 
-      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
        }`}>
       Jewelry
@@ -289,7 +308,7 @@ if (isLoadingItem) {
   <NavLink 
       to={buildPath("men's clothing")} 
       className={({ isActive }) => 
-      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
       }` }>
     Men's Clothing
@@ -298,7 +317,7 @@ if (isLoadingItem) {
     <NavLink 
       to={buildPath("women's clothing")} 
       className={({ isActive }) => 
-        `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+        `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
         isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
         }`}>
      Women's Clothing
@@ -307,7 +326,7 @@ if (isLoadingItem) {
    <NavLink 
       to={buildPath("groceries")} 
       className={({ isActive }) => 
-      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      `relative pb-1 transition-colors duration-200 select-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       isActive ? 'text-zinc-900 font-bold after:scale-x-100' : 'text-zinc-500 hover:text-zinc-900'
       }`}>
        Groceries
@@ -349,7 +368,7 @@ if (isLoadingItem) {
                     </div>
             
                 <div className="flex flex-1 flex-col p-3 justify-between">
-                   <div className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-gray-800 leading-snug"><p>{item.title}</p></div>
+                   <div className="line-clamp-2 min-h-10 text-sm font-medium text-gray-800 leading-snug"><p>{item.title}</p></div>
                   <h3>{item.name || item.item_details}</h3>
                 </div>
 
@@ -493,7 +512,7 @@ return (
 
  <div  className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900 font-sans   antialiased selection:bg-red-500/10"> 
    <header>
-    <div className="fixed top-0 left-0 right-0 z-50 w-full h-auto min-h-[3.5rem py-3 sm:p-y-0 sm:h-[4.5rem] px-[clamp(1rem,4vw,2.5rem)] bg-zinc-900 text-white shadow-md flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-4">
+    <div className="fixed top-0 left-0 right-0 z-50 w-full h-auto min-h-[3.5rem py-3 sm:p-y-0 sm:h-18  px-[clamp(1rem,4vw,2.5rem)] bg-zinc-900 text-white shadow-md flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-4">
 
       <NavLink 
       to="/" 
@@ -508,7 +527,7 @@ return (
    <div className="flex justify-between gap-2 sm:gap-10 items-baseline px-2 sm:px-4  md:px-6 w-full">
       <Link 
       to="/" 
-      className="relative inline-block text-sm md:text-base font-semibold text-slate-300 active:text-white pb-1 select-none transition-colors duration-200 lg:hover:text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 lg:hover:after:origin-bottom-left lg:hover:after:scale-x-100"
+      className="relative inline-block text-sm md:text-base font-semibold text-slate-300 active:text-white pb-1 select-none transition-colors duration-200 lg:hover:text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 lg:hover:after:origin-bottom-left lg:hover:after:scale-x-100"
        >
       Home
       </Link>
@@ -519,7 +538,7 @@ return (
       className="relative flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 font-semibold text-zinc-800 shadow-sm border border-zinc-200/50 transition-all duration-200 hover:bg-zinc-200/70 hover:shadow active:scale-95 text-xs md:text-sm">
 
       <span className="text-base">🛒</span>
-      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold min-w-[20px] text-center">
+      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold min-w-5 text-center">
         {totalCount}
       </span>
       </Link>
@@ -551,8 +570,6 @@ return (
 
 
       <OfflineBanner />
-      
-      
         <main>
         <AnimatePage key ={location.pathname}>
         <div>
@@ -577,19 +594,41 @@ return (
 
 
 
-
-
-export function HydrateFallback () {
+export function HydrateFallback() {
   return (
-   
-       <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9f9f9'}}>
-        <main style={{flex:1, display:'flex', justifyContent:'center', alignItems:'center', paddingTop: '80px'}}>
-          <div style={{textAlign: 'center', fontFamily: 'sans-serif', color: '#666'}}>
-            <h3>Booting GlobalStore Systems...</h3>
-            <h3>Please wait while we establish your secure session data....</h3>
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+      <header className="h-16 w-full border-b border-slate-200/50 bg-white/50 backdrop-blur-sm dark:border-slate-800/50 dark:bg-slate-900/50" aria-hidden="true" />
+
+      <main className="flex flex-1 flex-col items-center justify-center px-4">
+        <div 
+          className="flex flex-col items-center space-y-4 text-center max-w-sm"
+          role="status" 
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <svg 
+            className="h-10 w-10 animate-spin text-blue-600 dark:text-blue-500" 
+            xmlns="http://w3.org" 
+            fill="none" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+
+          <div className="space-y-1.5">
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
+              Connecting to GlobalStore
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Please wait while we securely set up your application session.
+            </p>
           </div>
-        </main>
-       </div>
+        </div>
+      </main>
+    </div>
   );
 }
 
@@ -600,73 +639,111 @@ export function GlobalErrorElement() {
   const error = useRouteError();
   const navigate = useNavigate();
 
-  let title = 'Unexpected System Error.';
+  let title = 'Unexpected System Error';
   let message = 'An error occurred while synchronizing store systems.';
-  console.log('Caught app crash:', error)
+  
      
-   if(isRouteErrorResponse(error)){
-     if(error.status === 404){
-     title ='Page Not Found.';
-     message="The requested page doesn't exist.";
-    }else {
-      title =` Error ${error.status}`;
-     message = error.statusText || message
-     }
-    }else if(error instanceof Error){
-  message = error.message;
-   }
+  if (isRouteErrorResponse(error)) {
+    if (error.status === 404) {
+      title = 'Page Not Found';
+      message = "The requested page doesn't exist or has been moved.";
+    } else {
+      title = `Error ${error.status}`;
+      message = error.statusText || message;
+    }
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fcfcfc', padding: '20px', fontSize:'1rem' }}>
-      <div style={{ maxWidth: '450px', width: '100%', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
-        <h1 style={{ color: '#222', marginBottom: '10px' }}>{title}</h1>
-        <p style={{ color: '#666', marginBottom: '24px', lineHeight: '1.5' }}> <span style={{color: '#ad3636'}}>{message}</span></p>
-       
-      <button onClick={()=> navigate('/')}>
-        Return to Home page
-      </button>
-      </div>
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+      <div className="h-1.5 w-full bg-red-600 dark:bg-red-500" aria-hidden="true" />
+      
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+      
+        <article 
+          className="flex w-full max-w-md flex-col items-center text-center"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400" aria-hidden="true">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+          </div>
+
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+            {title}
+          </h1>
+          
+          <p className="mt-3 text-base leading-relaxed text-slate-500 dark:text-slate-400">
+            {message}
+          </p>
+
+          <div className="mt-8 w-full sm:max-w-xs">
+            <button 
+              type="button"
+              onClick={() => navigate('/')}
+              className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              Return to Home page
+            </button>
+          </div>
+        </article>
+      </main>
     </div>
   );
 }
 
 
-export function OfflineBanner () {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  
-  useEffect (() => {
+
+export function OfflineBanner() {
+  const [isOnline, setIsOnline] = useState(() => 
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  );
+
+  useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('isOnline', handleOnline);
+  
+    window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('isOnline', handleOnline);
+      window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-    }
+    };
   }, []);
 
-  if(isOnline) return null;
+  if (isOnline) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom:0,
-      left: 0,
-      right: 0,
-      backgroundColor: '#e74c3c',
-      color: 'white',
-      textAlign: 'center',
-      padding: '10px',
-      fontWeight:'600',
-      zIndex: 9999,
-      fontFamily:'sans-serif',
-      boxShadow: '0 -2px 10px rgba(0,0,0,0.1'
-    }}>
-      🌐 You are currently offline. Some features may  be unavailable.
+    <div 
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      className="fixed bottom-0 left-0 right-0 z-9999 animate-slide-up bg-red-600 px-4 py-3 text-white shadow-2xl dark:bg-red-700 sm:py-3.5"
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-center space-x-3 text-center">
+      
+        <svg 
+          className="h-5 w-5 shrink-0 text-red-100" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          strokeWidth="2" 
+          stroke="currentColor" 
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 0a9.004 9.004 0 018.716 2.253M12 3a9.004 9.004 0 00-8.716 2.253m0 0A9.015 9.015 0 0112 12a9.015 9.015 0 018.716-6.747M12 12c2.485 0 4.5 4.03 4.5 9s-2.015 9-4.5 9m0-18c-2.485 0-4.5 4.03-4.5 9s2.015 9 4.5 9" />
+        </svg>
+        
+        <p className="text-sm font-semibold tracking-wide sm:text-base">
+          You are currently offline. Some features may be unavailable.
+        </p>
+      </div>
     </div>
-  )
+  );
 }
-
 
