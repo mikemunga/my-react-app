@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
    "tailwind:watch": "npx @tailwindcss/cli -i ./src/index.css -o ./src/output.css --watch"
-  },
+  }, 
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",
     "@tanstack/react-query-devtools": "^5.102.8",

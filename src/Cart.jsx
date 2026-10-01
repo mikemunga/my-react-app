@@ -14,19 +14,18 @@ import useCart from './useCartStore.js'
     }
 
 
-    return(
-       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm border  border-gray-100 divide-y divide-gray-100 mt-30 h-50">
-            <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.5'}}>
+   return(
+     <div className="mt-30 px-3">
+        <div>
            <h2 style={{margin: '0 0 20px 0', fontSize: '20px', borderBottom: '2px solid#f0f0f0', padding: '15px'}}>
                Shopping Basket ({totalCount} {totalCount ===1 ? 'Item' : 'Items'})
           </h2>
 
-
-     {cartItems.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-md mx-auto animate-fade-in ">
-       <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6  text-red-500 animate-pulse">
-        <svg xmlns="http://w3.org" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        {cartItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center py-16  px-4 max-w-md mx-auto animate-fade-in ">
+         <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6  text-red-500 animate-pulse">
+          <svg xmlns="http://w3.org" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
        </div>
 
@@ -45,14 +44,14 @@ import useCart from './useCartStore.js'
         </div>
        ): (
              cartItems.map(item => (
-                <div key={item.cart_item_id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
+                <div key={item.cart_item_id} className="flex flex-row sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
             
                 <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-50 rounded-lg p-1 border border-gray-50 ">
                  <img src={item.image} alt={item.id} 
                  className="w-full h-full object-contain mix-blend-multiply"/>
                  </div>
 
-                 <div className="flex-1 min-w-0 w-full flex flex-col sm:flex-row sm:items-center   sm:justify-between gap-3">
+                 <div className=" min-w-0 w-full flex flex-col sm:flex-row sm:items-center   sm:justify-between gap-3">
                   <h4 style={{margin: '0 0 8px 0', fontSize: '15px',  color: '#262626'}}>{item.title}</h4>
                  <p style={{margin :'0 0 12px', fontSize: '13px', color: '#8c8c8c'}}>Category: {item.category}</p>
                   </div>
@@ -68,7 +67,7 @@ import useCart from './useCartStore.js'
                  </span>
                 <button 
                    onClick={() => handleUpdateQuantity({ cartItemId: item.cart_item_id , currentQuantity: item.quantity, changeFactor: 1 })}
-                   className="w-8 h-8 flex items-center justify-center rounded text-gray-600 font-semibold hover:bg-white hover:text-black active:scale-95 transition-all select-none"
+                   className="w-2 h-2 flex items-center justify-center rounded text-gray-600 font-semibold hover:bg-white hover:text-black px px-2 active:scale-95 transition-all select-none"
                    aria-label="Increase quantity">
                           +
                  </button>
@@ -76,32 +75,7 @@ import useCart from './useCartStore.js'
                  </div>
                     ))
                   )}
-             </div>
-              
-                {cartItems.length > 0 && (
-                  <div style={{backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05', height: 'fit-container'}}>
-                   <h3 style={{margin: '0 0 20px 0', fontSize: '18px', borderBottom: '1px solid #f0f0f0', paddingBottom: '12px'}}>Order Checkout Summary</h3>
-                    <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 12px 0', color: '#595959'}}>
-                   <span>Basket SubTotal:</span>
-                   <span>Ksh</span>
-                   </div>
-
-                    <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 12px 0', color: '#595959'}}>
-                   <span>Shipping Fees:</span>
-                   <span style={{color: '#52c41a', fontWeight: 'bold'}}>FREE</span>
-                    </div>
-                    
-                    <div style={{display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed #d9d9d9', padding: '15px', marginBottom: '24px'}}>
-
-                    <span style={{fontSize: '16px', fontWeight: 'bold'}}>Estimated Total</span>
-                     <span style={{fontSize: '20px', fontWeight: 'bold', color: '#ff4d4f'}}>Ksh </span>
-                    </div>
-                    <button style={{width: '100%', padding:'14px', backgroundColor: '#ff4d4f' , color: '#fff,', border:'none', borderRadius:'4px',cursor: 'pointer', fontSize: '16px', fontWeight: 'bold'}}>
-                        Secure Checkout M-PESA
-                    </button>
-                    </div>
-                    )}
-
+             </div>     
         </div>
     )
 }
@@ -144,13 +118,12 @@ export  function CartAuthWall() {
           </button>
           
         
-          <button
+        <button
             onClick={() => navigate(`/signup?redirectTo=${encodedOrigin}`)}
             className="h-11 px-6 bg-zinc-50 hover:bg-zinc-100 active:scale-98 text-zinc-800 font-bold text-sm rounded-xl border border-zinc-200 transition-all duration-150 cursor-pointer flex items-center justify-center"
           >
             Create Account
           </button>
-
         </div>
 
         <button

@@ -106,8 +106,12 @@ const router = createBrowserRouter([
   {
     path: '*',
     element: NotFoundElement
+  },
+  {
+    path:'page',
+    element:<Page/>
   }
-
+ 
 ])
 
 
@@ -745,5 +749,43 @@ export function OfflineBanner() {
       </div>
     </div>
   );
+}
+
+
+const persons =[
+  {id:1, name:'mike',job:'dev',salary:'200k'},
+  {id:2, name:'felix',job:'dev',salary:'100k'},
+  {id:3, name:'munga',job:'dev',salary:'300k'},
+  {id:4, name:'anzazi',job:'dev',salary:'400k'}
+
+ 
+]
+
+function Class({elem}){
+  return(
+    <div className="bg-red-400">{elem}</div>
+  )
+}
+
+function Page(){
+ const [List, setList] = useState(persons);
+
+ const handleRemove = (id) => {
+  setList(List.filter(l=>l.id !==id))
+ }
+
+  return(
+    <div  className="bg-amber-200 h-screen ">
+
+    {List.map(i=><div className="flex flex-1" key={i.id}>
+      <h1>{i.name}</h1>
+  
+      <p>Job:..<span>{i.name}</span></p>..
+      <button className="bg-red-50 px-4" onClick={()=>handleRemove(i.id)}>x</button>
+    </div>)}
+
+
+    </div>
+  )
 }
 

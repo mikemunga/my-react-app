@@ -3,6 +3,7 @@ import {  Link, useLoaderData, useLocation, useNavigate} from "react-router";
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
 import useCart from './useCartStore.js';
+import { createPortal } from "react-dom";
 
 export default function ProductDetails() {
   const product = useLoaderData();
@@ -81,7 +82,7 @@ if (isAdding) {
   );
 }
   return (
-     <div className="w-full max-w-7xl mx-auto px-4 mt-4 sm:px-6 lg:px-8 pt-24 pb-16 font-sans antialiased text-zinc-900 selection:bg-red-500/10">
+     <div className="relative w-full max-w-7xl mx-auto px-4 mt-4 sm:px-6 lg:px-8 pt-24 pb-36 font-sans antialiased text-zinc-900 selection:bg-red-500/10 ">
      <Link 
       to="/" 
       className="group inline-flex items-center gap-2 text-sm font-bold text-red-500 transition-colors duration-200 hover:text-red-600 mb-8">
@@ -103,55 +104,50 @@ if (isAdding) {
       />
     </div>
 
-    <div className="flex-1 w-full flex flex-col">
-        <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2 block">
-        {product?.category}
-        </span>
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-zinc-900 leading-tight mb-2">
-        {product?.title}
-        </h1>
-         {product?.name && (
-        <p className="text-sm font-medium text-zinc-500 mb-4">{product?.name}</p>
-      )}
-
-        <h2 className="text-2xl sm:text-3xl font-black text-red-500 tracking-tight my-4">
-          KSH {product?.price?.toLocaleString() || product?.price}
-        </h2>
-     
-      <div className="border-t border-b border-zinc-200/80 py-5 my-4">
-         <h4 className="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-2">
-          Product Description
-          </h4>
-          <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-medium">
-          {product?.description || "No description provided for this item."}
-         </p>
-      </div>
-      
-      <button
-          onClick={onCartClick}
-          type="button"
-          disabled={isAddingToCart}
-           className={`w-full max-w-xs h-12 font-bold text-sm md:text-base rounded-xl select-none transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer
-          ${isAddingToCart 
-            ? 'bg-zinc-300 text-zinc-500 shadow-none cursor-not-allowed' 
-            : 'bg-red-500 text-white shadow-red-500/10 hover:bg-red-600 hover:-translate-y-0.5 active:translate-y-0 active:scale-98'
-          }
-         `}
-        >
-        {isAddingToCart ? (
-          <>
-            <span className="animate-pulse"></span> Adding to Basket...
-          </>
-        ) : (
-          <>
-            <span>🛒</span> Add to Cart
-          </>
-        )}
-      </button>
-
+  <div className="flex w-full flex-1 flex-col text-left pb-5">
+  <span className="block text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+    {product?.category}
+  </span>
+  
+  <h1 className="mt-2 text-xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-2xl lg:text-3xl">
+    {product?.title}
+  </h1>
+  {product?.name && (
+    <p className="mt-1 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+      {product?.name}
+    </p>
+  )}
+  <div className="my-6 flex flex-col gap-4 border-y border-zinc-200/80 py-5 dark:border-zinc-800 sm:flex-row sm:items-baseline sm:justify-between pb-8">
+    <h2 className="shrink-0 text-2xl font-black tracking-tight text-red-500 sm:text-3xl">
+      KSH {product?.price?.toLocaleString() || product?.price}
+    </h2>
+    <p className="text-sm font-medium leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-base">
+      {product?.description || "No description provided for this item."}
+    </p>
     </div>
-  </div>
-</div>       
+ 
+   </div>
+   </div>
+
+     {typeof window !== 'undefined' && createPortal(
+      <div className="fixed bottom-30 left-4 right-4 z-50 flex items-center justify-between gap-4 p-4 bg-slate-500/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 sm:hidden" > 
+        
+        <div className="flex items-center gap-3 ml-auto">
+          <button
+          onClick={onCartClick}
+          className="px-5 py-2.5 font-bold text-white bg-slate-600/50 border border-white/10 rounded-xl hover:bg-slate-600 transition-all active:scale-95">
+            Add To
+          </button> 
+          <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10">
+            Check Out
+          </button> 
+        </div>
+
+      </div>,
+      document.body
+    )}
+
+</div>
   );
 }
 
@@ -159,3 +155,4 @@ if (isAdding) {
 
 
 
+ 
