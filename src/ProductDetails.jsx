@@ -131,7 +131,7 @@ if (isAdding) {
    </div>
 
    <ButtonPortal>
-    <div className="fixed bottom-2 left-0.5 right-0.5 z-50 flex items-center justify-between gap-4 p-2    backdrop-blur-md rounded-3xl shadow-xl-in border border-white/10 sm:hidden" > 
+    <div className="fixed bottom-2 left-0.5 right-0.5 z-50 flex items-center justify-between gap-4 p-2 bg-slate-700  backdrop-blur-md rounded-3xl shadow-xl-in border-2 border-indigo-500 sm:hidden" > 
         
         <div className="flex items-center">
           <button
@@ -145,20 +145,22 @@ if (isAdding) {
             Check Out
           </button> 
         </div>
-
-    </div>,
-    
+    </div>, 
    </ButtonPortal>
+
+  <button 
+  onClick={onCartClick}
+  disabled={isAddingToCart}
+  className="hidden sm:inline-flex items-center justify-center w-full rounded-2xl bg-slate-600 hover:bg-slate-500 text-white font-semibold p-3 shadow-md hover:shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-[0.98]">
+  Add to Cart
+</button>
+
 </div>
   );
 }
 
 
-
-
-
     
-      
 
     export function ButtonPortal({ children }) {
       const mountNode = document.getElementById("portal-root");

@@ -118,11 +118,9 @@ const router = createBrowserRouter([
 export default  function App(){
   return(
     <>
-  
      <Toaster position = 'top-right' richColors/>
      <RouterProvider router={router}
      />
-    
     </>
   )
 }
@@ -153,10 +151,17 @@ function MyShop() {
    }else {
     newParams.delete('search');
    }
-   newParams.set(page, '1')
+   newParams.set('page', '1')
    setSearchParams(newParams);
   }
  
+
+   const handleNextPage = () => {
+    const newParams = new URLSearchParams(searchParams);
+    const nextPage = (page || 1) + 1;
+    newParams.set('page', nextPage.toString());
+    setSearchParams(newParams);
+  };
 
 if (error) {
   return (
@@ -194,8 +199,6 @@ if (error) {
 
     return `/?${params.toString()}`;
   }
- 
-
 
 if (isLoadingItem) {
   return (
@@ -263,15 +266,8 @@ if (isLoadingItem) {
       Search
     </button>
   </Form>
-</section>
-
-
-
-
-  
-   
-    
-  <nav className="hidden lg:flex items-center gap-6 xl:gap-8 font-medium p-20 justify-between">
+</section>  
+  <nav className="hidden sm:flex items-center font-small justify-between gap-6 xl:gap-8 p-[clamp(1rem,1.5vw,5rem)]">
   <NavLink 
     to={buildPath('')} 
     className={({ isActive }) => 
@@ -332,7 +328,6 @@ if (isLoadingItem) {
           {items && items.length > 0 ? (
           
             items.map((item) => (
-            
               <Link
               to = {`/product/${item.id}`}
               key={item.id} style={{
@@ -404,13 +399,21 @@ if (isLoadingItem) {
               <p className="text-xs md:text-sm text-zinc-500 font-medium mt-1">
                 No products match your criteria. Try adjusting your keywords or clearing the search bar.
               </p>
-            </div>
-
+           </div>
           )}
         </div>
-    </div>
-      
 
+        <div className="p-2">
+        <span>Current Page: {page} </span>
+        <button
+        onClick={handleNextPage}
+        className="bg-blue-900 text-white px-2 rounded-1xl text-1xl hover:bg-blue-600 transition-colors duration-300"
+         disabled={items.length < 8}
+        >Next</button>
+        </div>
+        
+
+    </div>
   );
 }
 
@@ -419,17 +422,38 @@ const cardStyle = { background: '#fff', borderRadius: '12px', padding: '10px', b
 
 
 export function RootLayout() {
-  const {page, data: items=[], isLoading} = useItems()
+  const { isLoading} = useItems()
   const {totalCount, user} = useCart()
   const navigate = useNavigate();
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams();
   const isLoadingDetails = location.state?.loading;
- 
- 
+  const currentCategory = searchParams.get('category') || 'all';
+
+ const CATEGORIES = [
+    { value: 'all', label: 'All Products' },
+    { value: 'electronics', label: 'Electronics' },
+    { value: 'jewelery', label: 'Jewelry' },
+    { value: 'men\'s clothing', label: 'Men\'s Clothing' },
+    { value: 'women\'s clothing', label: 'Women\'s Clothing' },
+    { value: 'groceries', label:'Groceries'}
+  ];
+
+  
+  const handleDropdownChange = (selectedValue) => {
+    const nextParams = new URLSearchParams(searchParams);
+    
+    if (selectedValue) {
+      nextParams.set('category', selectedValue);
+    } else {
+      nextParams.delete('category'); 
+    }
+    
+    nextParams.set('page', '1'); 
+    setSearchParams(nextParams);
+  };
 
 
-  const revalidator = useRevalidator();
   
   const handleLogout = async()=>{
    try {
@@ -437,18 +461,11 @@ export function RootLayout() {
    } catch (error) {
     console.log('Logout request failed:', error);
    } finally {
-    localStorage.removeItem('authToken')
+    
     queryClient.setQueryData(['authUser'], null);
     queryClient.removeQueries();
-    revalidator.revalidate();
     navigate('/')
    }
-  }
-
-  const handleNextPage = () => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('page',(page + 1).toString());
-    setSearchParams(newParams)
   }
 
 
@@ -501,9 +518,6 @@ if (isLoadingDetails) {
 
 
 return (
-
-
-
  <div  className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900 font-sans   antialiased selection:bg-red-500/10"> 
    <header>
     <div className="fixed top-0 left-0 right-0 z-50 w-full h-auto min-h-[3.5rem py-3 sm:p-y-0 sm:h-18  px-[clamp(1rem,4vw,2.5rem)] bg-zinc-900 text-white shadow-md flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-4">
@@ -516,8 +530,6 @@ return (
       Easy Shop Store 
       </NavLink> 
 
-
-
    <div className="flex justify-between gap-2 sm:gap-10 items-baseline px-2 sm:px-4  md:px-6 w-full">
       <Link 
       to="/" 
@@ -525,6 +537,21 @@ return (
        >
       Home
       </Link>
+
+  <div className="sm:hidden w-40  rounded-2xl px-2 border-2 border-white">
+    <select value={currentCategory}
+    defaultValue={currentCategory}
+    onChange={(e) => handleDropdownChange(e.target.value)}>
+    {CATEGORIES.map((cat) => (
+      <option className=" bg-slate-200 backdrop-blur-10xl text-slate-900 font-semibold border-0 font-stretch-extra-condensed" key={cat.path} value={cat.path}>
+        {cat.value}
+      </option>
+    ))}
+    </select>
+  </div>
+
+    
+
 
      <nav className="flex items-center gap-4 md:gap-6"> 
      <Link 
@@ -559,28 +586,14 @@ return (
 
     </div>
 </header>
-
-
-
-
       <OfflineBanner />
+
         <main>
         <AnimatePage key ={location.pathname}>
         <div>
         <Outlet />
         </div>
         </AnimatePage>
-       
-        {location.pathname === '/' && items.length > 0 && (
-          <div>
-          <span>Current Page: {page} </span>
-          <button
-        disabled={items.length < 8}
-        onClick={handleNextPage}
-        >Next</button>
-        </div>
-        )}
-       
       </main>
   </div>
   );

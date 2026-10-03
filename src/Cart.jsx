@@ -1,6 +1,7 @@
 
 import {  useNavigate, useSearchParams} from "react-router";
 import useCart from './useCartStore.js'
+import { ButtonPortal } from "./ProductDetails.jsx";
 
 
  export   function CartList(){
@@ -75,7 +76,19 @@ import useCart from './useCartStore.js'
                  </div>
                     ))
                   )}
-             </div>     
+             </div>    
+
+               <ButtonPortal>
+                 <div className="fixed bottom-3 left-0 right-0.5 z-50 flex items-center justify-center backdrop-blur-md rounded-3xl" > 
+                      </div>
+                      <div>
+                       <button className="py-2.5  w-full bg-blue-500 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all duration-300 active:scale-95 shadow-md shadow-green-900/10 mb-2">
+                         Check Out
+                       </button> 
+                     </div>
+    
+                </ButtonPortal>
+
         </div>
     )
 }
