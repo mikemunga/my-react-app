@@ -82,13 +82,14 @@ if (isAdding) {
   );
 }
   return (
-     <div className="relative w-full max-w-7xl mx-auto px-4 mt-4 sm:px-6 lg:px-8 pt-24 pb-36 font-sans antialiased text-zinc-900 selection:bg-red-500/10 ">
+     <div className="min-h-dvh relative w-full max-w-7xl mx-auto px-4 mt-4 sm:px-6 lg:px-8 pt-24 pb-36 font-sans antialiased text-zinc-900 selection:bg-red-500/10 ">
      <Link 
       to="/" 
       className="group inline-flex items-center gap-2 text-sm font-bold text-red-500 transition-colors duration-200 hover:text-red-600 mb-8">
       <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1">←</span> 
       Back to Catalog
   </Link>
+
   <div className="flex flex-col mt-5 md:flex-row gap-8 lg:gap-14 items-start w-full">
     <div 
        onMouseMove={handleMouseMove}
@@ -129,24 +130,25 @@ if (isAdding) {
    </div>
    </div>
 
-     {typeof window !== 'undefined' && createPortal(
-      <div className="fixed bottom-30 left-4 right-4 z-50 flex items-center justify-between gap-4 p-4 bg-slate-500/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 sm:hidden" > 
+   <ButtonPortal>
+    <div className="fixed bottom-2 left-0.5 right-0.5 z-50 flex items-center justify-between gap-4 p-2    backdrop-blur-md rounded-3xl shadow-xl-in border border-white/10 sm:hidden" > 
         
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="flex items-center">
           <button
           onClick={onCartClick}
           className="px-5 py-2.5 font-bold text-white bg-slate-600/50 border border-white/10 rounded-xl hover:bg-slate-600 transition-all active:scale-95">
             Add To
           </button> 
+         </div>
+         <div>
           <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10">
             Check Out
           </button> 
         </div>
 
-      </div>,
-      document.body
-    )}
-
+    </div>,
+    
+   </ButtonPortal>
 </div>
   );
 }
@@ -155,4 +157,13 @@ if (isAdding) {
 
 
 
- 
+    
+      
+
+    export function ButtonPortal({ children }) {
+      const mountNode = document.getElementById("portal-root");
+
+      if(!mountNode) return null;
+
+      return createPortal(children, mountNode)
+    }
