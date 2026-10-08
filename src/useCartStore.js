@@ -176,15 +176,18 @@ queryClient.setQueryData(queryKey, (oldData) => {
 }
 });
 
-
   const cartItems = query?.data || [];
   const totalCount = cartItems.reduce((total, item) => total+(item.quantity || 1), 0);
+
+   const subtotal = cartItems.reduce((total, item) => total + ((item.price || 0) * (item.quantity || 1)), 0);
+
 
   return {
     ...query,
     cartItems,
     totalCount,
     user,
+    subtotal,
     isAuthLoading,
     handleAddToCart: handleAddToCart.mutate,
     isAddingToCart: handleAddToCart.isPending,

@@ -1,11 +1,11 @@
 
 import {  useNavigate, useSearchParams} from "react-router";
 import useCart from './useCartStore.js'
-import { ButtonPortal } from "./ProductDetails.jsx";
+import { createPortal } from "react-dom";
 
 
  export   function CartList(){
-    const {data:cartItems = [], user, isLoading, handleUpdateQuantity, totalCount} = useCart()
+    const {data:cartItems = [], user, isLoading, handleUpdateQuantity, totalCount, subtotal} = useCart()
     const navigate = useNavigate();
     if(isLoading){
         return <div className="flex justify-center items-center">Loading your Cart...</div>
@@ -18,9 +18,12 @@ import { ButtonPortal } from "./ProductDetails.jsx";
    return(
      <div className="mt-30 px-3">
         <div>
-           <h2 style={{margin: '0 0 20px 0', fontSize: '20px', borderBottom: '2px solid#f0f0f0', padding: '15px'}}>
+          <div className="flex justify-between items-baseline flex-col gap-2 sm:flex-row">
+           <h2 style={{}}>
                Shopping Basket ({totalCount} {totalCount ===1 ? 'Item' : 'Items'})
           </h2>
+          <p>Subtotal:<span>{subtotal}</span></p>
+          </div>
 
         {cartItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-16  px-4 max-w-md mx-auto animate-fade-in ">
@@ -47,7 +50,7 @@ import { ButtonPortal } from "./ProductDetails.jsx";
              cartItems.map(item => (
                 <div key={item.cart_item_id} className="flex flex-row sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
             
-                <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-50 rounded-lg p-1 border border-gray-50 ">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-gray-50 rounded-lg p-1 border border-gray-50 ">
                  <img src={item.image} alt={item.id} 
                  className="w-full h-full object-contain mix-blend-multiply"/>
                  </div>
@@ -86,12 +89,20 @@ import { ButtonPortal } from "./ProductDetails.jsx";
                          Check Out
                        </button> 
                      </div>
-    
                 </ButtonPortal>
 
         </div>
     )
 }
+
+
+    export function ButtonPortal({ children }) {
+      const mountNode = document.getElementById("portal-root2");
+
+      if(!mountNode) return null;
+
+      return createPortal(children, mountNode)
+    }
 
 
 export  function CartAuthWall() {

@@ -363,7 +363,7 @@ if (isLoadingItem) {
 
                 <div className="mt-2 items-baseline justify-between gap-1">
                   <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-gray-900 uppercase tracking-wider text-red-500 text-[10px]">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-900 text-[10px]">
                       Ksh
                       </span>
                     <span className="trxt-base font-bold text-gray-900 leading-tight">
@@ -540,10 +540,9 @@ return (
 
   <div className="sm:hidden w-40  rounded-2xl px-2 border-2 border-white">
     <select value={currentCategory}
-    defaultValue={currentCategory}
     onChange={(e) => handleDropdownChange(e.target.value)}>
     {CATEGORIES.map((cat) => (
-      <option className=" bg-slate-200 backdrop-blur-10xl text-slate-900 font-semibold border-0 font-stretch-extra-condensed" key={cat.path} value={cat.path}>
+      <option className=" bg-slate-200 backdrop-blur-10xl text-slate-900 font-semibold border-0 font-stretch-extra-condensed" key={cat.value} value={cat.path}>
         {cat.value}
       </option>
     ))}

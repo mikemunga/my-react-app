@@ -12,7 +12,7 @@ export default function ProductDetails() {
   const isAdding = location.state?.loading || false;
 
 
-  const {handleAddToCart, isAddingToCart} = useCart();
+  const {handleAddToCart, totalCount, subtotal} = useCart();
   
   const {data: user} =useAuth();
   const [ ishovered, setIsHovered] = useState(false);
@@ -148,12 +148,31 @@ if (isAdding) {
     </div>, 
    </ButtonPortal>
 
-  <button 
-  onClick={onCartClick}
-  disabled={isAddingToCart}
-  className="hidden sm:inline-flex items-center justify-center w-full rounded-2xl bg-slate-600 hover:bg-slate-500 text-white font-semibold p-3 shadow-md hover:shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-[0.98]">
-  Add to Cart
-</button>
+ <ButtonPortal>
+  <div className="hidden sm:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-50 items-center justify-between gap-6 p-4 w-full max-w-3xl bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 shadow-2xl shadow-slate-950/50">
+    <div className="flex flex-col">
+      <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Subtotal</span>
+      <span className="text-xl font-bold text-white">{subtotal}</span>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <button
+        onClick={onCartClick}
+        className="flex items-center gap-2 px-6 py-3 font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 hover:text-white transition-all duration-200 active:scale-[0.98]"
+      >
+        Add To Cart
+      </button>
+
+      <button 
+        className="flex items-center gap-2 px-8 py-3 .bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold rounded-xl hover:from-emerald-300 hover:to-green-400 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-green-500/20"
+      >
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+</ButtonPortal>
+
+
 
 </div>
   );
@@ -169,3 +188,41 @@ if (isAdding) {
 
       return createPortal(children, mountNode)
     }
+
+
+
+
+
+
+
+export const DesktopActionBar = ({ onCartClick}) => {
+  return (
+    <div className="hidden sm:flex items-center justify-between gap-6 p-4 w-full max-w-3xl mx-auto bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-800 shadow-2xl shadow-slate-950/50">
+      
+    
+      <div className="flex flex-col">
+        <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Subtotal</span>
+        <span className="text-xl font-bold text-white">$249.00</span>
+      </div>
+
+    
+      <div className="flex items-center gap-3">
+  
+        <button
+          onClick={onCartClick}
+          className="group flex items-center gap-2 px-6 py-3 font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-750 hover:text-white hover:border-slate-600 transition-all duration-200 active:scale-[0.98]"
+        >
+    
+          <span>Add To Cart</span>
+        </button> 
+
+        
+        <button 
+          className="group flex items-center gap-2 px-8 py-3 .bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold rounded-xl hover:from-emerald-300 hover:to-green-400 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-green-500/20 hover:shadow-green-400/30"
+        >
+          <span>Proceed to Checkout</span>
+        </button> 
+      </div>
+    </div>
+  );
+};
