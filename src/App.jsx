@@ -1,4 +1,4 @@
-import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse, useSearchParams, useRouteError, NavLink, redirect, useRevalidator, useLocation, useNavigation} from "react-router";
+import { createBrowserRouter,Link, RouterProvider,  Outlet,  Form, useNavigate, isRouteErrorResponse, useSearchParams, useRouteError, NavLink, redirect, useLocation, useNavigation} from "react-router";
 import SignupPage,{ SignupAction } from './SignupPage';
 import LoginPage from './LoginPage';
 import { Toaster } from "sonner";
@@ -17,6 +17,7 @@ import { queryClient } from "./Query.js";
 import useItems from "./useItems.js";
 import useCart from "./useCartStore.js";
 import { NotFoundElement } from "./notFoundElement.jsx";
+import CheckoutPage from "./checkoutPage.jsx";
 
 const authRedirectLoader = async ({request}) => {
   //cart fetching logic on mount/ refresh by checking the user state.
@@ -50,6 +51,7 @@ const isAuthPath = url.pathname === '/login' || url.pathname === '/signup';
 
 const router = createBrowserRouter([
 
+
  {
       HydrateFallback: HydrateFallback,
       errorElement: <GlobalErrorElement/>,
@@ -80,6 +82,11 @@ const router = createBrowserRouter([
         element: <ProductDetails />,
         loader :productDetailsLoader,
       },
+      {
+        path:'checkout',
+        element: 
+         <CheckoutPage/>
+      }
       ]
     },
 

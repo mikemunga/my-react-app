@@ -141,7 +141,9 @@ if (isAdding) {
           </button> 
          </div>
          <div>
-          <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10">
+          <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10"
+          onClick={() => navigate('/checkout')}
+          >
             Check Out
           </button> 
         </div>
@@ -157,13 +159,13 @@ if (isAdding) {
 
     <div className="flex items-center gap-3">
       <button
-        onClick={onCartClick}
         className="flex items-center gap-2 px-6 py-3 font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 hover:text-white transition-all duration-200 active:scale-[0.98]"
       >
         Add To Cart
       </button>
 
       <button 
+        onClick={() => navigate('/checkout')}
         className="flex items-center gap-2 px-8 py-3 .bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold rounded-xl hover:from-emerald-300 hover:to-green-400 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-green-500/20"
       >
         Proceed to Checkout

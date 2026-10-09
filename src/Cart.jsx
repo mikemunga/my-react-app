@@ -87,7 +87,10 @@ import { ButtonPortal } from "./portal.jsx";
         <ButtonPortal>
                 <div className="fixed bottom-3 left-0.5 right-0.5 z-50 flex items-center justify-center bg-slate-700  backdrop-blur-md rounded-3xl shadow-xl-in border-2 border-indigo-500 sm:hidden" > 
                      <div>
-                      <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10">
+                      <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10
+                      "
+                      onClick={() => navigate('/checkout')}
+                      >
                         Check Out
                       </button> 
                     </div>
@@ -104,6 +107,7 @@ import { ButtonPortal } from "./portal.jsx";
               
                   <div className="flex items-center gap-3">
                     <button 
+                      onClick={() => navigate('/checkout')}
                       className="flex items-center gap-2 px-8 py-3 .bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold rounded-xl hover:from-emerald-300 hover:to-green-400 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-green-500/20"
                     >
                       Proceed to Checkout
