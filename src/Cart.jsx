@@ -1,7 +1,7 @@
 
 import {  useNavigate, useSearchParams} from "react-router";
 import useCart from './useCartStore.js'
-import { createPortal } from "react-dom";
+import { ButtonPortal } from "./portal.jsx";
 
 
  export   function CartList(){
@@ -16,7 +16,7 @@ import { createPortal } from "react-dom";
 
 
    return(
-     <div className="mt-30 px-3">
+   <div className="mt-30 px-3">
         <div>
           <div className="flex justify-between items-baseline flex-col gap-2 sm:flex-row">
            <h2 style={{}}>
@@ -47,8 +47,9 @@ import { createPortal } from "react-dom";
          </button>
         </div>
        ): (
-             cartItems.map(item => (
-                <div key={item.cart_item_id} className="flex flex-row sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
+          cartItems.map(item => (
+          <div key={item.cart_item_id}>
+             <div key={item.cart_item_id} className="flex flex-row sm:flex-row items-start sm:items-center gap-4 py-5 border-b border-gray-100 last:border-b-0 w-full">
             
                 <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-gray-50 rounded-lg p-1 border border-gray-50 ">
                  <img src={item.image} alt={item.id} 
@@ -77,32 +78,45 @@ import { createPortal } from "react-dom";
                  </button>
                   </div>
                  </div>
-                    ))
-                  )}
-             </div>    
+                  </div> ))
+               )}    
+          </div> 
+      
+        {cartItems.length > 0 && (
+        <div> 
+        <ButtonPortal>
+                <div className="fixed bottom-3 left-0.5 right-0.5 z-50 flex items-center justify-center bg-slate-700  backdrop-blur-md rounded-3xl shadow-xl-in border-2 border-indigo-500 sm:hidden" > 
+                     <div>
+                      <button className="px-5 py-2.5 bg-green-300 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all active:scale-95 shadow-md shadow-green-900/10">
+                        Check Out
+                      </button> 
+                    </div>
+                </div>, 
+               </ButtonPortal>
+
 
                <ButtonPortal>
-                 <div className="fixed bottom-3 left-0 right-0.5 z-50 flex items-center justify-center backdrop-blur-md rounded-3xl" > 
-                      </div>
-                      <div>
-                       <button className="py-2.5  w-full bg-blue-500 text-slate-800 font-bold rounded-xl hover:bg-green-400 transition-all duration-300 active:scale-95 shadow-md shadow-green-900/10 mb-2">
-                         Check Out
-                       </button> 
-                     </div>
-                </ButtonPortal>
-
+                <div className="hidden sm:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-50 items-center justify-between gap-6 p-4 w-full max-w-3xl bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 shadow-2xl shadow-slate-950/50">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Subtotal</span>
+                    <span className="text-xl font-bold text-white">{subtotal}</span>
+                  </div>
+              
+                  <div className="flex items-center gap-3">
+                    <button 
+                      className="flex items-center gap-2 px-8 py-3 .bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold rounded-xl hover:from-emerald-300 hover:to-green-400 transition-all duration-200 active:scale-[0.98] shadow-lg shadow-green-500/20"
+                    >
+                      Proceed to Checkout
+                    </button>
+                  </div>
+                </div>
+              </ButtonPortal>
         </div>
+        )}
+
+       </div>
     )
 }
-
-
-    export function ButtonPortal({ children }) {
-      const mountNode = document.getElementById("portal-root2");
-
-      if(!mountNode) return null;
-
-      return createPortal(children, mountNode)
-    }
 
 
 export  function CartAuthWall() {
@@ -156,8 +170,8 @@ export  function CartAuthWall() {
         >
           Continue Browsing
         </button>
-
       </div>
+    
     </div>
   );
 }

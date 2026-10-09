@@ -3,7 +3,7 @@ import {  Link, useLoaderData, useLocation, useNavigate} from "react-router";
 import { useAuth } from "./useAuthStore.js";
 import { useRef, useState } from "react";
 import useCart from './useCartStore.js';
-import { createPortal } from "react-dom";
+import { ButtonPortal } from "./portal.jsx";
 
 export default function ProductDetails() {
   const product = useLoaderData();
@@ -12,7 +12,7 @@ export default function ProductDetails() {
   const isAdding = location.state?.loading || false;
 
 
-  const {handleAddToCart, totalCount, subtotal} = useCart();
+  const {handleAddToCart, subtotal} = useCart();
   
   const {data: user} =useAuth();
   const [ ishovered, setIsHovered] = useState(false);
@@ -177,22 +177,6 @@ if (isAdding) {
 </div>
   );
 }
-
-
-    
-
-    export function ButtonPortal({ children }) {
-      const mountNode = document.getElementById("portal-root");
-
-      if(!mountNode) return null;
-
-      return createPortal(children, mountNode)
-    }
-
-
-
-
-
 
 
 export const DesktopActionBar = ({ onCartClick}) => {
