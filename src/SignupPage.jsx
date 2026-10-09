@@ -150,7 +150,11 @@ export default function SignupPage() {
             Log in
           </Link>
         </p>
-
+     <Link 
+     to='/'
+     className="flex justify-center items-center hover:text-red-500">
+     Continue Browsing?
+     </Link>
       </div>
     </div>
   );

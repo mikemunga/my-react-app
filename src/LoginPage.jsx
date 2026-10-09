@@ -106,7 +106,10 @@ export default function LoginPage() {
           Sign Up
           </Link>
         </p>
-
+      <Link
+      className="flex justify-center items-center hover:text-red-500"
+      to='/'
+      >Continue Browsing</Link>
       </div>
     </div>
   );

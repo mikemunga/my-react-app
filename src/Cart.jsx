@@ -154,7 +154,7 @@ export  function CartAuthWall() {
     
           <button
             onClick={() => navigate(`/login?redirectTo=${encodedOrigin}`)}
-            className="h-11 px-6 bg-red-500 hover:bg-red-600 active:scale-98 text-white font-bold text-sm rounded-xl tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center"
+            className="h-11 px-6 bg-red-500 hover:bg-red-300 active:scale-98 text-white font-bold text-sm rounded-xl tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center"
           >
             Sign In
           </button>
@@ -162,7 +162,7 @@ export  function CartAuthWall() {
         
         <button
             onClick={() => navigate(`/signup?redirectTo=${encodedOrigin}`)}
-            className="h-11 px-6 bg-zinc-50 hover:bg-zinc-100 active:scale-98 text-zinc-800 font-bold text-sm rounded-xl border border-zinc-200 transition-all duration-150 cursor-pointer flex items-center justify-center"
+            className="h-11 px-6 text-white bg-blue-500  hover:bg-blue-300 active:scale-98  font-bold text-sm rounded-xl border border-zinc-200  cursor-pointer flex items-center justify-center transition-colors duration-300"
           >
             Create Account
           </button>
@@ -170,7 +170,7 @@ export  function CartAuthWall() {
 
         <button
           onClick={() => navigate('/')}
-          className="text-sm font-semibold text-zinc-400 hover:text-red-500 transition-colors duration-200 cursor-pointer underline underline-offset-4"
+          className="text-sm font-semibold text-zinc-900 hover:text-red-500 transition-colors duration-200 cursor-pointer underline underline-offset-4"
         >
           Continue Browsing
         </button>
